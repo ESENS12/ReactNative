@@ -1,49 +1,74 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import React, { Component } from 'react';
+import { Text, View, Image, StyleSheet } from 'react-native';
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
-type Props = {};
-export default class App extends Component<Props> {
+export default class App extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
+        <View style={styles.container}>
+
+          <View style={styles.imgWrapper}>
+
+            <Image
+                style={styles.img}
+                source={{
+                  uri: 'https://static.pexels.com/photos/23049/pexels-photo.jpg',
+                }}
+            />
+            <View style={styles.imgOver}>
+              <Text style={styles.text}>Something</Text>
+            </View>
+
+          </View>
+
+        </View>
     );
   }
 }
 
+const width = 150,
+    height = 150,
+    borders = {
+      tl: 80,
+      tr: 80,
+      bl: 80,
+      br: 80,
+    };
+
+const baseStyle = {
+  width: width,
+  height: height,
+  borderTopLeftRadius: borders.tl,
+  borderTopRightRadius: borders.tr,
+  borderBottomLeftRadius: borders.bl,
+  borderBottomRightRadius: borders.br,
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  text: {
+    color:'white',
+    fontSize:34
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  img: baseStyle,
+  imgWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    position: 'absolute',
+    ...baseStyle,
+  },
+  imgOver: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'red',
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    ...baseStyle,
   },
 });
