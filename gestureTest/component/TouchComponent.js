@@ -31,6 +31,10 @@ export default class PanResponderExample extends React.Component<Props> {
         event: PressEvent,
         gestureState: GestureState,
     ): boolean => {
+        console.log("_handlerStartShouldSetPanResponder");
+        console.log("GestureState : " + gestureState);
+
+
         // Should we become active when the user presses down on the circle?
         return true;
     };
@@ -50,19 +54,28 @@ export default class PanResponderExample extends React.Component<Props> {
         this._highlight();
     };
 
-    _handlePanResponderMove = (event: PressEvent, gestureState: GestureState) => {
-        this._circleStyles.style.left = this._previousLeft + gestureState.dx;
-        this._circleStyles.style.top = this._previousTop + gestureState.dy;
-        this._updateNativeStyles();
-    };
+            _handlePanResponderMove = (event: PressEvent, gestureState: GestureState) => {
+            this._circleStyles.style.left = this._previousLeft + gestureState.dx;
+            this._circleStyles.style.top = this._previousTop + gestureState.dy;
+            this._updateNativeStyles();
+        };
 
-    _handlePanResponderEnd = (event: PressEvent, gestureState: GestureState) => {
-        this._unHighlight();
-        this._previousLeft += gestureState.dx;
-        this._previousTop += gestureState.dy;
+        _handlePanResponderEnd = (event: PressEvent, gestureState: GestureState) => {
+            this._unHighlight();
+            this._previousLeft += gestureState.dx;
+            this._previousTop += gestureState.dy;
     };
 
     _panResponder: PanResponderInstance = PanResponder.create({
+        onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder,
+        onMoveShouldSetPanResponder: this._handleMoveShouldSetPanResponder,
+        onPanResponderGrant: this._handlePanResponderGrant,
+        onPanResponderMove: this._handlePanResponderMove,
+        onPanResponderRelease: this._handlePanResponderEnd,
+        onPanResponderTerminate: this._handlePanResponderEnd,
+    });
+
+    _panRespondBackground : PanResponderInstance = PanResponder.create({
         onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder,
         onMoveShouldSetPanResponder: this._handleMoveShouldSetPanResponder,
         onPanResponderGrant: this._handlePanResponderGrant,
@@ -142,6 +155,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
+        backgroundColor : 'black',
         paddingTop: 64,
     },
 });
