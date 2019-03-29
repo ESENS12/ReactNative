@@ -1,7 +1,7 @@
 
 import React, {Component} from 'react';
 import {TouchableHighlight ,TouchableOpacity,Platform, Button ,StyleSheet, Text, View} from 'react-native';
-
+import WhateverComponent from './WhateverComponent';
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -37,9 +37,11 @@ export default class App extends Component<Props> {
           <Text>bottomView</Text>
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={() => this._onClick('left')} style ={styles.leftSide}>
-          <Text>leftSide</Text>
-        </TouchableHighlight>
+          <WhateverComponent />
+
+        {/*<TouchableHighlight onPress={() => this._onClick('left')} style ={styles.leftSide}>*/}
+          {/*<Text>leftSide</Text>*/}
+        {/*</TouchableHighlight>*/}
 
       </View>
     );
