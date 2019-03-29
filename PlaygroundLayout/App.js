@@ -1,49 +1,95 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {TouchableHighlight ,TouchableOpacity,Platform, Button ,StyleSheet, Text, View} from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
 
 type Props = {};
 export default class App extends Component<Props> {
+
+  constructor(props) {
+    super(props);
+
+   //this.state = { isEnable : true };
+    //state와 listener의 context가 다르기때문에 반드시 생성자에서 bind 해줘야함
+    //this.callbackListener = this.callbackListener.bind(this);
+    //this.isEnableFirstTBTListener = this.isEnableFirstTBTListener.bind(this);
+    this._onClick = this._onClick.bind(this);
+  }
+
+  _onClick(number){
+    console.log("number is : " + number);
+  }
+
   render() {
     return (
+
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+
+        <TouchableOpacity onPress={() => this._onClick(1)} style={styles.topView}>
+          <Text>topView</Text>
+        </TouchableOpacity>
+
+        <TouchableHighlight onPress={() => this._onClick(2)} style={styles.content}>
+          <Text>Content</Text>
+        </TouchableHighlight>
+
+        <TouchableHighlight onPress={() => this._onClick(3)} style={styles.bottomView}>
+          <Text>bottomView</Text>
+        </TouchableHighlight>
+
+        <TouchableHighlight onPress={() => this._onClick('left')} style ={styles.leftSide}>
+          <Text>leftSide</Text>
+        </TouchableHighlight>
+
       </View>
     );
   }
 }
 
+// alignItems -> flex-start,center, flex-end, stretch
+// justifyContent -> flex-start, center, flex-end, space-around, space-between, space-evenly
+// flexDirection -> row , column
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+
+  topView : {
+    flex : 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: 'gray',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  content : {
+    flex : 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'pink',
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  bottomView : {
+    flex : 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'blue',
   },
+
+  leftSide:{
+    //absolute를 주면 오버레이가 가능함
+    position: 'absolute',
+    //zIndex가 높은 순서대로 위에 표시된다.
+    zIndex : 1 ,
+    flex: 1,
+    left : 0,
+    top : 0,
+    bottom: 0,
+    right:"80%",
+    justifyContent : 'center',
+    alignSelf: 'stretch',
+    backgroundColor : 'red',
+  },
+
 });
