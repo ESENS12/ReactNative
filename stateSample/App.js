@@ -1,13 +1,7 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet,Button, Text, View} from 'react-native';
+import SomethingComponent from "./SomethingComponent";
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -18,16 +12,36 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props> {
+
+  constructor(props) {
+    super(props);
+    this.state = { isShowing : true };
+
+    this._onPressButton = this._onPressButton.bind(this);
+  }
+
+
+  _onPressButton(){
+    console.log("press button!");
+    this.setState({ isShowing : !this.state.isShowing });
+  }
+
   render() {
+
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        { this.state.isShowing && <SomethingComponent style ={styles.instructions}/> }
+        <Button style={styles.button} title={"Change State"} onPress={this._onPressButton}/>
       </View>
+
     );
   }
+
+
+
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -45,5 +59,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
+  },
+  button: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: 100,
   },
 });
