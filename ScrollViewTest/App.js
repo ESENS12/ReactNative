@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 
 import {ListItem } from 'react-native-elements'
-
+import SectionListBasic from './component/SectionListBasic'
 import { randomUsers } from './util';
 
 export default class App extends Component {
@@ -31,23 +31,24 @@ export default class App extends Component {
 
     render() {
         return (
-                <FlatList
-                    data={this.state.data}
-                    initialNumToRender={20}
-                    onEndReachedThreshold={1}
-                    onEndReached={this.onEndReached}
-                    refreshing={this.state.refreshing}
-                    onRefresh={this.onRefresh}
-                    renderItem={({ item }) => {
-                        return (
-                            <ListItem
-                                roundAvatar
-                                avatar={{uri: item.avatar}}
-                                title={item.name}
-                            />
-                        );
-                    }}
-                />
+            <SectionListBasic/>
+                // <FlatList
+                //     data={this.state.data}
+                //     initialNumToRender={20}
+                //     onEndReachedThreshold={1}
+                //     onEndReached={this.onEndReached}
+                //     refreshing={this.state.refreshing}
+                //     onRefresh={this.onRefresh}
+                //     renderItem={({ item }) => {
+                //         return (
+                //             <ListItem
+                //                 roundAvatar
+                //                 avatar={{uri: item.avatar}}
+                //                 title={item.name}
+                //             />
+                //         );
+                //     }}
+                // />
         );
     }
 }
