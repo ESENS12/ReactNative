@@ -10,3 +10,7 @@ https://github.com/react-native-community/react-native-viewpager
 - yarn add @react-native-community/viewpager
 - react-native link @react-native-community/viewpager
 
+ViewPagerPage.js (Rn-viewPager) 
+
+https://github.com/zbtang/React-Native-ViewPager
+- npm install --save rn-viewpager
