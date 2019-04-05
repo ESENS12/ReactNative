@@ -9,6 +9,9 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import MyPager from "./component/MyPager";
+import ViewPagerPage from "./component/ViewPagerPage";
+import ViewPager from "./component/ViewPager";
+
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -21,7 +24,9 @@ type Props = {};
 export default class App extends Component<Props> {
   render() {
     return (
-        <MyPager/>
+        //<MyPager/>,
+        //<ViewPager/>,
+          <ViewPagerPage/>
     );
   }
 }
