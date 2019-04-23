@@ -1,3 +1,3 @@
 # ReactNative
-## For Study ReactNative ( Android / IOS / Node.js )
+## For Study ReactNative (with Android / iOS / React.js )
 
