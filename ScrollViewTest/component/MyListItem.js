@@ -44,6 +44,8 @@ class MultiSelectList extends React.PureComponent {
         />
     );
 
+
+
     render() {
         return (
             <FlatList
