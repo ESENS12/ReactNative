@@ -57,13 +57,13 @@ export default class ViewPagerPage extends Component {
                     indicator={this._renderTabIndicator()}
                 >
                     <View>
-                        <ViewItem pageIndex ={1} />
+                        <ViewItem pageIndex ={1} background ={styles.viewPager}  />
                     </View>
                     <View>
-                        <ViewItem pageIndex ={2} />
+                        <ViewItem pageIndex ={2} background ={styles.secondPage}/>
                     </View>
                     <View>
-                        <ViewItem pageIndex ={3} />
+                        <ViewItem pageIndex ={3} background ={styles.thirdPage}/>
                     </View>
 
                 </IndicatorViewPager>
@@ -97,3 +97,29 @@ export default class ViewPagerPage extends Component {
     }
 
 }
+
+
+const styles = StyleSheet.create({
+    viewPager: {
+        flex: 1,
+        justifyContent:'center',
+        alignContent:'stretch',
+        backgroundColor:'skyblue',
+    },
+    secondPage: {
+        flex: 1,
+        justifyContent:'center',
+        alignContent:'stretch',
+        backgroundColor:'green',
+    },
+    thirdPage: {
+        flex: 1,
+        justifyContent:'center',
+        alignContent:'stretch',
+        backgroundColor:'yellow',
+    },
+    textView :{
+        alignSelf : 'center'
+    },
+
+});
