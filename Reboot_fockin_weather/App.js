@@ -7,25 +7,14 @@
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import Loading from './Component/Loading';
 
-import Loading from "./Component/Loading"
-
-const App: () => React$Node = () => {
+const App: () => GettingTheFockinWeather = () => {
   return (
     <>
-      <Loading> </Loading>
+      <Loading />
     </>
   );
 };
-
-
 
 export default App;
