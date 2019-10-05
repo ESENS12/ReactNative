@@ -14,16 +14,20 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-export default class App extends Component {
+import Geolocation from '@react-native-community/geolocation';
+
+export default class GettingLocation extends Component {
   state = {
-    location: null,
+    location: 'korea,seoul',
   };
 
   findCoordinates = () => {
-    navigator.geolocation.getCurrentPosition(
+    // Geolocation.getCurrentPosition(info => console.log(info));
+
+    Geolocation.getCurrentPosition(
       position => {
         const location = JSON.stringify(position);
-
+        console.log('this location : ' + location);
         this.setState({location});
       },
       error => Alert.alert(error.message),
