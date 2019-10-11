@@ -17,6 +17,8 @@ import {
 import Geolocation from '@react-native-community/geolocation';
 
 export default class Getting_Location extends Component {
+
+    //this is sample code
   state = {
     location: 'korea,seoul',
   };
@@ -30,8 +32,26 @@ export default class Getting_Location extends Component {
         console.log('this location : ' + location);
         this.setState({location});
       },
-      error => Alert.alert(error.message),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+      // error => Alert.alert(error.message),
+      error => {
+        Alert.alert(error.message + "Change Accuracy to Low");
+        this.findCoordinatesLowAccuracy();
+      },
+      {enableHighAccuracy: true, timeout: 2000, maximumAge: 1000},
+    );
+  };
+
+  findCoordinatesLowAccuracy = () => {
+    // Geolocation.getCurrentPosition(info => console.log(info));
+
+    Geolocation.getCurrentPosition(
+        position => {
+          const location = JSON.stringify(position);
+          console.log('this location [LowAccuracy] : ' + location);
+          this.setState({location});
+        },
+        error => Alert.alert(error.message),
+        {enableHighAccuracy: false, timeout: 2000, maximumAge: 1000},
     );
   };
 
