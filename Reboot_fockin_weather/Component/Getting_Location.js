@@ -16,7 +16,7 @@ import {
 
 import Geolocation from '@react-native-community/geolocation';
 
-export default class GettingLocation extends Component {
+export default class Getting_Location extends Component {
   state = {
     location: 'korea,seoul',
   };

@@ -8,7 +8,7 @@
 
 import React from 'react';
 import Loading from './Component/Loading';
-import GettingLocation from './getting_location';
+import GettingLocation from './Component/Getting_Location';
 
 // geolocation API sample
 // geolocation.getCurrentPosition(geo_success, [geo_error], [geo_options]);
