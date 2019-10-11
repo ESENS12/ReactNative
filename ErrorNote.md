@@ -15,11 +15,19 @@ yarn install
 'React/RCTBridgeDelegate.h' file not found
 ->cocoapods를 설치해줘야함
 
-Brew install cocoapods
-Cd iOS
-Pod install
+brew install cocoapods
+cd iOS
+pod install
 
 
-Android build error 
+#Android build error 
 
-## org.webkit:android-jsc.
+
+# 다중 포트 설정 방법(다중실행)
+React-native start —port 8082
+위처럼 특정포트 지정 후에
+안드로이드는 에뮬or 단말에서 설정변경해줘야함
+
+iOS는 따로 변경하지 않고 ,해당 링크 참조
+
+https://medium.com/@hsuastegui/use-react-native-in-a-different-port-1109db5674d8
