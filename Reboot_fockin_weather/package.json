@@ -12,8 +12,10 @@
   "dependencies": {
     "@react-native-community/geolocation": "^2.0.2",
     "eslint-config-airbnb": "^18.0.1",
+    "expo-location": "^7.0.0",
     "react": "16.9.0",
-    "react-native": "0.61.1"
+    "react-native": "0.61.1",
+    "react-native-unimodules": "^0.7.0-rc.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

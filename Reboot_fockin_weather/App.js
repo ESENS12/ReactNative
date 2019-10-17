@@ -8,17 +8,21 @@
 
 import React from 'react';
 import Loading from './Component/Loading';
+import GettingLocationLikeNicolas from './Component/GettingLocationLikeNicolas';
 import GettingLocation from './Component/Getting_Location';
+import BasicLocationForExpo from './Component/BasicLocation_forExpo';
 
-// geolocation API sample
-// geolocation.getCurrentPosition(geo_success, [geo_error], [geo_options]);
-//
-const geolocation = navigator.geolocation;
+/**
+ * todo  : when click this page -> need to change GettingLocation page .... or just get the location and showing !
+ *
+ * */
 
 const App: () => GettingTheFockinWeather = () => {
   return (
     <>
       {/*<Loading />*/}
+      {/*<GettingLocationLikeNicolas/>*/}
+      {/*<BasicLocationForExpo/>*/}
       <GettingLocation />
     </>
   );
