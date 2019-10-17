@@ -5,6 +5,8 @@
  * */
 
 import React, {Component} from 'react';
+// import GetWeather from '/Component/GetWeather.js'
+
 import {
   Platform,
   StyleSheet,
@@ -15,22 +17,44 @@ import {
 } from 'react-native';
 
 import Geolocation from '@react-native-community/geolocation';
+import axios from 'axios';
+
+const API_KEY = ''
 
 export default class Getting_Location extends Component {
 
-    //this is sample code
+  //this is sample code
   state = {
     location: 'korea,seoul',
   };
 
-  findCoordinates = () => {
+  //
+  // getWeather = async (latitude, longitude) => {
+  //   const{ data } = await axios.get(`http://api.openweathermap.org/data/2.5/weather?&lat=${latitude}&lon=${longitude}&APPID=${API_KEY}`);
+  //   Alert.alert(data);
+  // };
+
+  getWeather = async (latitude, longitude) => {
+    try{
+      console.log("getWeather lat : " + latitude + ", lon : " + longitude);
+      return await axios.get(`http://api.openweathermap.org/data/2.5/weather?&lat=${latitude}&lon=${longitude}&APPID=${API_KEY}`);
+    }catch (e) {
+      Alert.alert('Error!' + e.toString());
+    }
+  };
+
+
+
+
+  findCoordinates = async() => {
     // Geolocation.getCurrentPosition(info => console.log(info));
 
     Geolocation.getCurrentPosition(
       position => {
         const location = JSON.stringify(position);
-        console.log('this location : ' + location);
+        console.log('this location : ' + location.latitude);
         this.setState({location});
+        Alert.alert(this.getWeather(location.latitude,location.longitude));
       },
       // error => Alert.alert(error.message),
       error => {
@@ -41,7 +65,7 @@ export default class Getting_Location extends Component {
     );
   };
 
-  findCoordinatesLowAccuracy = () => {
+  findCoordinatesLowAccuracy = async() => {
     // Geolocation.getCurrentPosition(info => console.log(info));
 
     Geolocation.getCurrentPosition(
@@ -49,6 +73,7 @@ export default class Getting_Location extends Component {
           const location = JSON.stringify(position);
           console.log('this location [LowAccuracy] : ' + location);
           this.setState({location});
+          Alert.alert(this.getWeather(location.latitude,location.longitude));
         },
         error => Alert.alert(error.message),
         {enableHighAccuracy: false, timeout: 2000, maximumAge: 1000},
