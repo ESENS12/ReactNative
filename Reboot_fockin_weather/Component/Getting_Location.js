@@ -19,7 +19,7 @@ import {
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 
-const API_KEY = ''
+const API_KEY = '35e5753f7bc1a760140b5cb3aadc058a'
 
 export default class Getting_Location extends Component {
 
@@ -54,6 +54,10 @@ export default class Getting_Location extends Component {
         const location = JSON.stringify(position);
         console.log('this location : ' + location.latitude);
         this.setState({location});
+
+        const myLocation = JSON.parse(location);
+        console.log(myLocation.latitude,myLocation.longitude);
+
         Alert.alert(this.getWeather(location.latitude,location.longitude));
       },
       // error => Alert.alert(error.message),
@@ -71,9 +75,12 @@ export default class Getting_Location extends Component {
     Geolocation.getCurrentPosition(
         position => {
           const location = JSON.stringify(position);
-          console.log('this location [LowAccuracy] : ' + location);
+          const myLocation = JSON.parse(location);
+          console.log(myLocation.latitude,myLocation.longitude);
+
+          // console.log('this location [LowAccuracy] : ' + location);
           this.setState({location});
-          Alert.alert(this.getWeather(location.latitude,location.longitude));
+          Alert.alert(this.getWeather(myLocation.latitude,myLocation.longitude));
         },
         error => Alert.alert(error.message),
         {enableHighAccuracy: false, timeout: 2000, maximumAge: 1000},

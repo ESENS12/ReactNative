@@ -21,9 +21,9 @@ const App: () => GettingTheFockinWeather = () => {
   return (
     <>
       {/*<Loading />*/}
-      {/*<GettingLocationLikeNicolas/>*/}
+      <GettingLocationLikeNicolas/>
       {/*<BasicLocationForExpo/>*/}
-      <GettingLocation />
+      {/*<GettingLocation />*/}
     </>
   );
 };
