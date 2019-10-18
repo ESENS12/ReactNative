@@ -13,14 +13,15 @@ export default class GettingLocationLikeNicolas extends React.Component {
 
     _getLocationAsync = async () => {
         let {status} = await Permissions.askAsync(Permissions.LOCATION);
-        Alert.alert(status.toString());
         if (status !== 'granted') {
             this.setState({
                 errorMessage: 'Permission to access location was denied',
             });
         }else{
             const location =  await Location.getCurrentPositionAsync();
-            Alert.alert(location);
+
+            console.log("location : " + location);
+            Alert.alert('your location : ' , location.coords.latitude + ", " +  location.coords.longitude);
         }
     };
 
