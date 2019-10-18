@@ -19,7 +19,7 @@ import {
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 
-const API_KEY = '35e5753f7bc1a760140b5cb3aadc058a'
+const API_KEY = '35e5753f7bc1a760140b5cb3aadc058a';
 
 export default class Getting_Location extends Component {
 
@@ -34,14 +34,7 @@ export default class Getting_Location extends Component {
   //   Alert.alert(data);
   // };
 
-  getWeather = async (latitude, longitude) => {
-    try{
-      console.log("getWeather lat : " + latitude + ", lon : " + longitude);
-      return await axios.get(`http://api.openweathermap.org/data/2.5/weather?&lat=${latitude}&lon=${longitude}&APPID=${API_KEY}`);
-    }catch (e) {
-      Alert.alert('Error!' + e.toString());
-    }
-  };
+
 
 
 

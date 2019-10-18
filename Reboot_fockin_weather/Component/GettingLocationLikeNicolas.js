@@ -3,6 +3,12 @@ import React from "react"
 import Constants from 'expo-constants';
 import * as Location from "expo-location";
 import  * as Permissions from 'expo-permissions';
+import axios from 'axios';
+
+import GetWeatherAPIKey from './GetWeather.js'
+
+
+// const API_KEY = '35e5753f7bc1a760140b5cb3aadc058a';
 
 export default class GettingLocationLikeNicolas extends React.Component {
 
@@ -21,7 +27,11 @@ export default class GettingLocationLikeNicolas extends React.Component {
             const location =  await Location.getCurrentPositionAsync();
 
             console.log("location : " + location);
-            Alert.alert('your location : ' , location.coords.latitude + ", " +  location.coords.longitude);
+            // Alert.alert('your location : ' , location.coords.latitude + ", " +  location.coords.longitude);
+
+            if(location !== null){
+                getWeather(location.coords.latitude, location.coords.longitude);
+            }
         }
     };
 
@@ -38,6 +48,16 @@ export default class GettingLocationLikeNicolas extends React.Component {
             this._getLocationAsync();
         }
     }
+
+    getWeather = async (latitude, longitude) => {
+        try{
+            console.log("getWeather lat : " + latitude + ", lon : " + longitude);
+            return await axios.get(`http://api.openweathermap.org/data/2.5/weather?&lat=${latitude}&lon=${longitude}&APPID=${GetWeatherAPIKey()}`);
+        }catch (e) {
+            Alert.alert('Error!' + e.toString());
+        }
+    };
+
 
     render(){
         return (
