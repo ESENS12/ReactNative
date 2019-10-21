@@ -13,7 +13,8 @@ import GetWeatherAPIKey from './GetWeather.js'
 export default class GettingLocationLikeNicolas extends React.Component {
 
     state = {
-        location: null,
+        latitude : null,
+        longitude : null,
         errorMessage: null,
     };
 
@@ -26,14 +27,34 @@ export default class GettingLocationLikeNicolas extends React.Component {
         }else{
             const location =  await Location.getCurrentPositionAsync();
 
-            console.log("location : " + location);
-            // Alert.alert('your location : ' , location.coords.latitude + ", " +  location.coords.longitude);
-
             if(location !== null){
-                getWeather(location.coords.latitude, location.coords.longitude);
+                console.log("lon : " + location.coords.longitude + " , lat : " + location.coords.latitude);
+
+                this.setState({
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                });
+
+                this.getWeather(this.state.latitude, this.state.longitude);
             }
         }
     };
+
+
+    getWeather = async (latitude, longitude) => {
+        try{
+
+            console.log("getWeather lat : " + latitude + ", lon : " + longitude);
+            const result_getWeather =  await axios.get(`http://api.openweathermap.org/data/2.5/weather?&lat=${latitude}&lon=${longitude}&APPID=${GetWeatherAPIKey()}&units=metric`);
+            console.log("res : " + result_getWeather.data.toString())
+            const jsonWeather = JSON.parse(result_getWeather);
+            // console.log("getWeather result : " + String);
+
+        }catch (e) {
+            Alert.alert('Error!' + e.toString());
+        }
+    };
+
 
 
     componentDidMount() {
@@ -46,23 +67,19 @@ export default class GettingLocationLikeNicolas extends React.Component {
         //
         } else {
             this._getLocationAsync();
+
+            // if(this.state.latitude !== null) {
+            //     this.getWeather(this.state.latitude, this.state.longitude);
+            // }
+
         }
     }
-
-    getWeather = async (latitude, longitude) => {
-        try{
-            console.log("getWeather lat : " + latitude + ", lon : " + longitude);
-            return await axios.get(`http://api.openweathermap.org/data/2.5/weather?&lat=${latitude}&lon=${longitude}&APPID=${GetWeatherAPIKey()}`);
-        }catch (e) {
-            Alert.alert('Error!' + e.toString());
-        }
-    };
-
 
     render(){
         return (
             <View style={styles.container}>
                 <Text style={styles.text}>Getting the Fucking Weather like Nicolas!</Text>
+                {/*{this.location.coords.longitude}*/}
             </View>
         );
     }
