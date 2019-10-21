@@ -5,7 +5,8 @@ import * as Location from "expo-location";
 import  * as Permissions from 'expo-permissions';
 import axios from 'axios';
 
-import GetWeatherAPIKey from './GetWeather.js'
+import GetWeatherAPIKey from './myWeather.js'
+import {PropsType} from 'react-native/ReactCommon/hermes/inspector/tools/msggen/src/Type';
 
 
 // const API_KEY = '35e5753f7bc1a760140b5cb3aadc058a';
@@ -16,7 +17,10 @@ export default class GettingLocationLikeNicolas extends React.Component {
         latitude : null,
         longitude : null,
         errorMessage: null,
+        myWeather : null,
     };
+
+
 
     _getLocationAsync = async () => {
         let {status} = await Permissions.askAsync(Permissions.LOCATION);
@@ -46,9 +50,14 @@ export default class GettingLocationLikeNicolas extends React.Component {
 
             console.log("getWeather lat : " + latitude + ", lon : " + longitude);
             const result_getWeather =  await axios.get(`http://api.openweathermap.org/data/2.5/weather?&lat=${latitude}&lon=${longitude}&APPID=${GetWeatherAPIKey()}&units=metric`);
-            console.log("res : " + result_getWeather.data.toString())
-            const jsonWeather = JSON.parse(result_getWeather);
-            // console.log("getWeather result : " + String);
+            console.log(JSON.stringify(result_getWeather.data));
+            const jsonWeather = JSON.parse(JSON.stringify(result_getWeather.data));
+            console.log('jsonweather : ' + jsonWeather["weather"][0].main);
+
+            this.setState({
+                myWeather: jsonWeather["weather"][0]
+            });
+
 
         }catch (e) {
             Alert.alert('Error!' + e.toString());
@@ -85,6 +94,11 @@ export default class GettingLocationLikeNicolas extends React.Component {
     }
 
 }
+
+GettingLocationLikeNicolas.propsTypes={
+    temp : PropsType.number.isRequired,
+
+};
 
 const styles = StyleSheet.create({
     container: {
