@@ -18,6 +18,7 @@ export default class GettingLocationLikeNicolas extends React.Component {
         longitude : null,
         errorMessage: null,
         myWeather : null,
+        myTemp : null,
     };
 
 
@@ -47,18 +48,18 @@ export default class GettingLocationLikeNicolas extends React.Component {
 
     getWeather = async (latitude, longitude) => {
         try{
-
-            console.log("getWeather lat : " + latitude + ", lon : " + longitude);
             const result_getWeather =  await axios.get(`http://api.openweathermap.org/data/2.5/weather?&lat=${latitude}&lon=${longitude}&APPID=${GetWeatherAPIKey()}&units=metric`);
             console.log(JSON.stringify(result_getWeather.data));
+
             const jsonWeather = JSON.parse(JSON.stringify(result_getWeather.data));
-            console.log('jsonweather : ' + jsonWeather["weather"][0].main);
 
             this.setState({
-                myWeather: jsonWeather["weather"][0]
+                myWeather: jsonWeather["weather"][0].main,
+                myTemp : jsonWeather["main"].temp
             });
 
-
+            console.log('myWeather : ' + this.state.myWeather);
+            console.log('myTemp : ' + this.state.myTemp);
         }catch (e) {
             Alert.alert('Error!' + e.toString());
         }
@@ -94,11 +95,11 @@ export default class GettingLocationLikeNicolas extends React.Component {
     }
 
 }
-
-GettingLocationLikeNicolas.propsTypes={
-    temp : PropsType.number.isRequired,
-
-};
+//
+// GettingLocationLikeNicolas.propsTypes={
+//     temp : PropsType.number.isRequired,
+//
+// };
 
 const styles = StyleSheet.create({
     container: {
