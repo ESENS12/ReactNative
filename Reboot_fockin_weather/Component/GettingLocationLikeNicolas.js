@@ -1,4 +1,4 @@
-import {Platform, Alert, StyleSheet, Text, View} from 'react-native';
+import {Platform, Alert, StyleSheet, Text, StatusBar, View} from 'react-native';
 import React from "react"
 import Constants from 'expo-constants';
 import * as Location from "expo-location";
@@ -6,8 +6,20 @@ import  * as Permissions from 'expo-permissions';
 import axios from 'axios';
 
 import GetWeatherAPIKey from './myWeather.js'
-import {PropsType} from 'react-native/ReactCommon/hermes/inspector/tools/msggen/src/Type';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
+const weatherOptions={
+    undefined:{
+      iconName: ""
+    },
+    Haze:{
+        iconName : "weather-hail"
+    },
+    Clear:{
+        iconName: "weather-sunny"
+    },
+};
 
 // const API_KEY = '35e5753f7bc1a760140b5cb3aadc058a';
 
@@ -22,6 +34,7 @@ export default class GettingLocationLikeNicolas extends React.Component {
     };
 
 
+    //todo  - need to study ES6, and clean-up this shit hole
 
     _getLocationAsync = async () => {
         let {status} = await Permissions.askAsync(Permissions.LOCATION);
@@ -55,7 +68,7 @@ export default class GettingLocationLikeNicolas extends React.Component {
 
             this.setState({
                 myWeather: jsonWeather["weather"][0].main,
-                myTemp : jsonWeather["main"].temp
+                myTemp : parseInt(jsonWeather["main"].temp)
             });
 
             console.log('myWeather : ' + this.state.myWeather);
@@ -87,19 +100,27 @@ export default class GettingLocationLikeNicolas extends React.Component {
 
     render(){
         return (
-            <View style={styles.container}>
-                <Text style={styles.text}>Getting the Fucking Weather like Nicolas!</Text>
-                {/*{this.location.coords.longitude}*/}
-            </View>
+            <LinearGradient
+                colors={['#4c669f', '#3b5998', '#192f6a']}
+                style={styles.container}>
+                <StatusBar barStyle="light-content"/>
+
+                <View style={styles.weatherContainer}>
+                    <MaterialCommunityIcons style ={styles.icon} size={96} name = { weatherOptions['Clear'].iconName }/>
+                    <Text style={styles.tempText}>{this.state.myTemp}°</Text>
+                </View>
+                <View style={styles.otherViewContainer}>
+                    <Text style={styles.text}>Getting the Fucking Weather like Nicolas!</Text>
+                </View>
+            </LinearGradient>
         );
     }
 
 }
-//
-// GettingLocationLikeNicolas.propsTypes={
-//     temp : PropsType.number.isRequired,
-//
-// };
+
+GettingLocationLikeNicolas.defaultProps ={
+    myWeather : "Clear"
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -107,10 +128,30 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         paddingHorizontal: 30,
         paddingVertical: 100,
+        alignItems: 'center',
         backgroundColor: '#FDF6AA',
     },
+    icon:{
+        color:'white',
+    } ,
+    weatherContainer:{
+        flex: 1,
+        justifyContent: 'center',
+    },
+    otherViewContainer:{
+        flex:1,
+        justifyContent: 'flex-end',
+    },
+
+    tempText: {
+        marginTop : 25,
+        color: 'white',
+        textAlign : 'center',
+        fontSize: 48,
+    },
+
     text: {
-        color: '#2c2c2c',
+        color: 'white',
         fontSize: 20, //20px
     },
 });
