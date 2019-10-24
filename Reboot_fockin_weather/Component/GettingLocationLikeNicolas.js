@@ -1,157 +1,142 @@
-import {Platform, Alert, StyleSheet, Text, StatusBar, View} from 'react-native';
-import React from "react"
-import Constants from 'expo-constants';
-import * as Location from "expo-location";
-import  * as Permissions from 'expo-permissions';
-import axios from 'axios';
 
-import GetWeatherAPIKey from './myWeather.js'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
+import React from "react";
+import { View, Text, StyleSheet, StatusBar } from "react-native";
+import PropTypes from "prop-types";
+import { LinearGradient } from "expo-linear-gradient";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const weatherOptions={
-    undefined:{
-      iconName: ""
+const weatherOptions = {
+    Thunderstorm: {
+        iconName: "weather-lightning",
+        gradient: ["#373B44", "#4286f4"],
+        title: "Thunderstorm in the house",
+        subtitle: "Actually, outside of the house"
     },
-    Haze:{
-        iconName : "weather-hail"
+    Drizzle: {
+        iconName: "weather-hail",
+        gradient: ["#89F7FE", "#66A6FF"],
+        title: "Drizzle",
+        subtitle: "Is like rain, but gay 🏳️‍🌈"
     },
-    Clear:{
-        iconName: "weather-sunny"
+    Rain: {
+        iconName: "weather-rainy",
+        gradient: ["#00C6FB", "#005BEA"],
+        title: "Raining like a MF",
+        subtitle: "For more info look outside"
     },
+    Snow: {
+        iconName: "weather-snowy",
+        gradient: ["#7DE2FC", "#B9B6E5"],
+        title: "Cold as balls",
+        subtitle: "Do you want to build a snowman? Fuck no."
+    },
+    Atmosphere: {
+        iconName: "weather-hail",
+        gradient: ["#89F7FE", "#66A6FF"]
+    },
+    Clear: {
+        iconName: "weather-sunny",
+        gradient: ["#FF7300", "#FEF253"],
+        title: "Sunny as fuck",
+        subtitle: "Go get your ass burnt"
+    },
+    Clouds: {
+        iconName: "weather-cloudy",
+        gradient: ["#D7D2CC", "#304352"],
+        title: "Clouds",
+        subtitle: "I know, fucking boring"
+    },
+    Mist: {
+        iconName: "weather-hail",
+        gradient: ["#4DA0B0", "#D39D38"],
+        title: "Mist!",
+        subtitle: "It's like you have no glasses on."
+    },
+    Dust: {
+        iconName: "weather-hail",
+        gradient: ["#4DA0B0", "#D39D38"],
+        title: "Dusty",
+        subtitle: "Thanks a lot China 🖕🏻"
+    },
+    Haze: {
+        iconName: "weather-hail",
+        gradient: ["#4DA0B0", "#D39D38"],
+        title: "Haze",
+        subtitle: "Just don't go outside."
+    }
 };
 
-// const API_KEY = '35e5753f7bc1a760140b5cb3aadc058a';
-
-export default class GettingLocationLikeNicolas extends React.Component {
-
-    state = {
-        latitude : null,
-        longitude : null,
-        errorMessage: null,
-        myWeather : null,
-        myTemp : null,
-    };
-
-
-    //todo  - need to study ES6, and clean-up this shit hole
-
-    _getLocationAsync = async () => {
-        let {status} = await Permissions.askAsync(Permissions.LOCATION);
-        if (status !== 'granted') {
-            this.setState({
-                errorMessage: 'Permission to access location was denied',
-            });
-        }else{
-            const location =  await Location.getCurrentPositionAsync();
-
-            if(location !== null){
-                console.log("lon : " + location.coords.longitude + " , lat : " + location.coords.latitude);
-
-                this.setState({
-                    latitude: location.coords.latitude,
-                    longitude: location.coords.longitude,
-                });
-
-                this.getWeather(this.state.latitude, this.state.longitude);
-            }
-        }
-    };
-
-
-    getWeather = async (latitude, longitude) => {
-        try{
-            const result_getWeather =  await axios.get(`http://api.openweathermap.org/data/2.5/weather?&lat=${latitude}&lon=${longitude}&APPID=${GetWeatherAPIKey()}&units=metric`);
-            console.log(JSON.stringify(result_getWeather.data));
-
-            const jsonWeather = JSON.parse(JSON.stringify(result_getWeather.data));
-
-            this.setState({
-                myWeather: jsonWeather["weather"][0].main,
-                myTemp : parseInt(jsonWeather["main"].temp)
-            });
-
-            console.log('myWeather : ' + this.state.myWeather);
-            console.log('myTemp : ' + this.state.myTemp);
-        }catch (e) {
-            Alert.alert('Error!' + e.toString());
-        }
-    };
-
-
-
-    componentDidMount() {
-        if (Platform.OS === 'android' && !Constants.isDevice) {
-            this.setState({
-                errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-            });
-
-            Alert.alert(this.state.errorMessage);
-        //
-        } else {
-            this._getLocationAsync();
-
-            // if(this.state.latitude !== null) {
-            //     this.getWeather(this.state.latitude, this.state.longitude);
-            // }
-
-        }
-    }
-
-    render(){
-        return (
-            <LinearGradient
-                colors={['#4c669f', '#3b5998', '#192f6a']}
-                style={styles.container}>
-                <StatusBar barStyle="light-content"/>
-
-                <View style={styles.weatherContainer}>
-                    <MaterialCommunityIcons style ={styles.icon} size={96} name = { weatherOptions['Clear'].iconName }/>
-                    <Text style={styles.tempText}>{this.state.myTemp}°</Text>
-                </View>
-                <View style={styles.otherViewContainer}>
-                    <Text style={styles.text}>Getting the Fucking Weather like Nicolas!</Text>
-                </View>
-            </LinearGradient>
-        );
-    }
-
+export default function Weather({ temp, condition }) {
+    return (
+        <LinearGradient
+            colors={weatherOptions[condition].gradient}
+            style={styles.container}
+        >
+            <StatusBar barStyle="light-content" />
+            <View style={styles.halfContainer}>
+                <MaterialCommunityIcons
+                    size={96}
+                    name={weatherOptions[condition].iconName}
+                    color="white"
+                />
+                <Text style={styles.temp}>{temp}°</Text>
+            </View>
+            <View style={styles.textContainer}>
+                <Text style={styles.title}>{weatherOptions[condition].title}</Text>
+                <Text style={styles.subtitle}>
+                    {weatherOptions[condition].subtitle}
+                </Text>
+            </View>
+        </LinearGradient>
+    );
 }
 
-GettingLocationLikeNicolas.defaultProps ={
-    myWeather : "Clear"
+Weather.propTypes = {
+    temp: PropTypes.number.isRequired,
+    condition: PropTypes.oneOf([
+        "Thunderstorm",
+        "Drizzle",
+        "Rain",
+        "Snow",
+        "Atmosphere",
+        "Clear",
+        "Clouds",
+        "Haze",
+        "Mist",
+        "Dust"
+    ]).isRequired
 };
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1
+    },
+    temp: {
+        fontSize: 42,
+        color: "white"
+    },
+    halfContainer: {
         flex: 1,
-        justifyContent: 'flex-end',
-        paddingHorizontal: 30,
-        paddingVertical: 100,
-        alignItems: 'center',
-        backgroundColor: '#FDF6AA',
+        justifyContent: "center",
+        alignItems: "center"
     },
-    icon:{
-        color:'white',
-    } ,
-    weatherContainer:{
-        flex: 1,
-        justifyContent: 'center',
+    title: {
+        color: "white",
+        fontSize: 44,
+        fontWeight: "300",
+        marginBottom: 10,
+        textAlign: "left"
     },
-    otherViewContainer:{
-        flex:1,
-        justifyContent: 'flex-end',
+    subtitle: {
+        fontWeight: "600",
+        color: "white",
+        fontSize: 24,
+        textAlign: "left"
     },
-
-    tempText: {
-        marginTop : 25,
-        color: 'white',
-        textAlign : 'center',
-        fontSize: 48,
-    },
-
-    text: {
-        color: 'white',
-        fontSize: 20, //20px
-    },
+    textContainer: {
+        alignItems: "flex-start",
+        paddingHorizontal: 40,
+        justifyContent: "center",
+        flex: 1
+    }
 });

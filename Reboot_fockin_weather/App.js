@@ -1,31 +1,51 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import React from "react";
+import { Alert } from "react-native";
+import Loading from "./Component/Loading";
+import * as Location from "expo-location";
+import axios from "axios";
+import Weather from "./Component/GettingLocationLikeNicolas";
 
-import React from 'react';
-import Loading from './Component/Loading';
-import GettingLocationLikeNicolas from './Component/GettingLocationLikeNicolas';
-import GettingLocation from './Component/Getting_Location';
-import BasicLocationForExpo from './Component/BasicLocation_forExpo';
+const API_KEY = "241051bf13976dd3ddf8b8d9f247255e";
 
-/**
- * todo  : when click this page -> need to change GettingLocation page .... or just get the location and showing !
- *
- * */
-
-const App: () => GettingTheFockinWeather = () => {
-  return (
-    <>
-      {/*<Loading />*/}
-      <GettingLocationLikeNicolas/>
-      {/*<BasicLocationForExpo/>*/}
-      {/*<GettingLocation />*/}
-    </>
-  );
-};
-
-export default App;
+export default class extends React.Component {
+    state = {
+        isLoading: true
+    };
+    getWeather = async (latitude, longitude) => {
+        const {
+            data: {
+                main: { temp },
+                weather
+            }
+        } = await axios.get(
+            `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&APPID=${API_KEY}&units=metric`
+        );
+        this.setState({
+            isLoading: false,
+            condition: weather[0].main,
+            temp
+        });
+    };
+    getLocation = async () => {
+        try {
+            await Location.requestPermissionsAsync();
+            const {
+                coords: { latitude, longitude }
+            } = await Location.getCurrentPositionAsync();
+            this.getWeather(latitude, longitude);
+        } catch (error) {
+            Alert.alert("Can't find you.", "So sad");
+        }
+    };
+    componentDidMount() {
+        this.getLocation();
+    }
+    render() {
+        const { isLoading, temp, condition } = this.state;
+        return isLoading ? (
+            <Loading />
+        ) : (
+            <Weather temp={Math.round(temp)} condition={condition} />
+        );
+    }
+}
