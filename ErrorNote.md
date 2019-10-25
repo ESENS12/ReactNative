@@ -21,6 +21,37 @@ pod install
 
 
 # Android build error 
+React-native unimodules 관련 빌드 오류 발생
+안드로이드에서 해당 모듈 import못하는 현상에서, instruction 제대로 안읽고 떄려박아서 발생한 문제가 있었음.
+https://github.com/unimodules/react-native-unimodules 참고해서 제대로 설정..
+
+ 1.build.gradle(project) 에 apply from: '../../node_modules/react-native-unimodules/gradle.groovy' 추가할때 이놈이 addUnimodulesDependencies() 보다 선행되어야함
+
+-> Unimodules 관련 이슈 발생..
+
+ERROR: Unable to resolve dependency for ':unimodules-react-native-adapter@debug/compileClasspath': Could not resolve androidx.core:core:{strictly 1.0.0}.
+Show Details
+Affected Modules: unimodules-react-native-adapter
+
+ERROR: Unable to resolve dependency for ':unimodules-react-native-adapter@debug/compileClasspath': Could not resolve androidx.vectordrawable:vectordrawable:{strictly 1.0.0}.
+Show Details
+Affected Modules: unimodules-react-native-adapter
+
+ERROR: Unable to resolve dependency for ':unimodules-react-native-adapter@debug/compileClasspath': Could not resolve androidx.core:core:1.0.0.
+Show Details
+Affected Modules: unimodules-react-native-adapter
+
+ERROR: Unable to resolve dependency for ':unimodules-react-native-adapter@debug/compileClasspath': Could not resolve androidx.vectordrawable:vectordrawable:1.0.0.
+Show Details
+Affected Modules: unimodules-react-native-adapter
+
+ERROR: Unable to resolve dependency for ':unimodules-react-native-adapter@debug/compileClasspath': Could not resolve androidx.core:core:1.0.1.
+Show Details
+Affected Modules: unimodules-react-native-adapter
+
+ERROR: Unable to resolve dependency for ':unimodules-react-native-adapter@debug/compileClasspath': Could not resolve androidx.vectordrawable:vectordrawable:1.0.1.
+Show Details
+Affected Modules: unimodules-react-native-adapter
 
 
 # 다중 포트 설정 방법(다중실행)
@@ -40,5 +71,4 @@ https://medium.com/@hsuastegui/use-react-native-in-a-different-port-1109db5674d8
    3. https://gist.github.com/brentvatne/1ece8c32a3c5c9d0ac3a470460c65603 참고하여 AppDelegate.h 와 m 을 수정해주면 된다.
 
    
- - android는 expo location 정상 동작 안하고 있음
 
