@@ -1,15 +1,16 @@
 import React from "react";
-import { Alert } from "react-native";
+import {Alert, Platform} from 'react-native';
 import Loading from "./Component/Loading";
 import * as Location from "expo-location";
 import axios from "axios";
 import Weather from "./Component/GettingLocationLikeNicolas";
 
-const API_KEY = "241051bf13976dd3ddf8b8d9f247255e";
+const API_KEY = "35e5753f7bc1a760140b5cb3aadc058a";
 
 export default class extends React.Component {
     state = {
-        isLoading: true
+        isLoading: true,
+        errorMessage : null
     };
     getWeather = async (latitude, longitude) => {
         const {
@@ -37,8 +38,27 @@ export default class extends React.Component {
             Alert.alert("Can't find you.", "So sad");
         }
     };
+
+    getPermissionForAndroid = async () => {
+        let {status} = await Permissions.askAsync(Permissions.LOCATION).then(Alert.alert(status));
+        if (status !== 'granted') {
+            this.setState({
+                errorMessage: 'Permission to access location was denied',
+            });
+        }else{
+            this.setState({
+                errorMessage: 'Permission Access',
+            });
+        }
+
+    };
+
     componentDidMount() {
-        this.getLocation();
+        if (Platform.OS === 'android') {
+            this.getPermissionForAndroid();
+        } else {
+            this.getLocation();
+        }
     }
     render() {
         const { isLoading, temp, condition } = this.state;
