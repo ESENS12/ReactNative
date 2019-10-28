@@ -9,10 +9,7 @@ export default class App extends Component<Props> {
   constructor(props) {
     super(props);
 
-   //this.state = { isEnable : true };
     //state와 listener의 context가 다르기때문에 반드시 생성자에서 bind 해줘야함
-    //this.callbackListener = this.callbackListener.bind(this);
-    //this.isEnableFirstTBTListener = this.isEnableFirstTBTListener.bind(this);
     this._onClick = this._onClick.bind(this);
   }
 
@@ -37,18 +34,18 @@ export default class App extends Component<Props> {
           <Text>bottomView</Text>
         </TouchableHighlight>
 
-          <WhateverComponent />
+          {/*<WhateverComponent />*/}
 
-        {/*<TouchableHighlight onPress={() => this._onClick('left')} style ={styles.leftSide}>*/}
-          {/*<Text>leftSide</Text>*/}
-        {/*</TouchableHighlight>*/}
+        <TouchableHighlight onPress={() => this._onClick('left')} style ={styles.leftSide}>
+          <Text>leftSide</Text>
+        </TouchableHighlight>
 
       </View>
     );
   }
 }
 
-// alignItems -> flex-start,center, flex-end, stretch
+// alignItems -> flex-start, center, flex-end, stretch
 // justifyContent -> flex-start, center, flex-end, space-around, space-between, space-evenly
 // flexDirection -> row , column
 
@@ -74,6 +71,8 @@ const styles = StyleSheet.create({
   },
   bottomView : {
     flex : 1,
+    //zIndex가 높은 순서대로 위에 표시된다, zIndex가 없거나, 같은값일때는 가장 아래쪽 view가 최상단에 표출된다.
+    zIndex : 2 ,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'blue',
@@ -93,5 +92,4 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     backgroundColor : 'red',
   },
-
 });
