@@ -1,6 +1,7 @@
 
 import React from 'react';
-import cheerio from 'cheerio';
+// import cheerio from 'cheerio';
+
 import {
   SafeAreaView,
   StyleSheet,
@@ -22,7 +23,11 @@ import {
 
 export default class extends React.Component {
 
-  componentDidMount = () => this.loadNextPage();
+
+    state = {
+        page: 0,
+        items: [],
+    };
 
   loadNextPage = () =>
       this.setState(async state => {
@@ -30,6 +35,8 @@ export default class extends React.Component {
         const items = await loadGraphicCards(page);
         return {items, page};
       });
+
+    componentDidMount = () => this.loadNextPage();
 
   render(){
     return(
@@ -47,10 +54,11 @@ export default class extends React.Component {
 async function loadGraphicCards(page = 1) {
   const searchUrl = `https://www.amazon.de/s/?page=${page}&keywords=graphic+card`;
   const response = await fetch(searchUrl);  // fetch page
+  const cheerio = require("cheerio");
 
   const htmlString = await response.text(); // get response text
-  const $ = cheerio.load(htmlString);       // parse HTML string
-
+    const $ = cheerio.load(htmlString);       // parse HTML string
+    console.log('try to load : '+ $ );
   return $("#s-results-list-atf > li")             // select result <li>s
       .map((_, li) => ({                      // map to an list of objects
         asin: $(li).data("asin"),
