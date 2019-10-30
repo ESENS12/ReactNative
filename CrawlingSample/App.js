@@ -1,6 +1,6 @@
 
 import React from 'react';
-// import cheerio from 'cheerio';
+import cheerio from 'cheerio-without-node-native';
 
 import {
   SafeAreaView,
@@ -23,20 +23,20 @@ import {
 
 export default class extends React.Component {
 
-
     state = {
         page: 0,
         items: [],
     };
 
-  loadNextPage = () =>
+  getNextPage = () =>
       this.setState(async state => {
         const page = state.page + 1;
         const items = await loadGraphicCards(page);
+        console.log("items : "  + items.toString());
         return {items, page};
       });
 
-    componentDidMount = () => this.loadNextPage();
+    componentDidMount = () => this.getNextPage();
 
   render(){
     return(
@@ -53,13 +53,16 @@ export default class extends React.Component {
 
 async function loadGraphicCards(page = 1) {
   const searchUrl = `https://www.amazon.de/s/?page=${page}&keywords=graphic+card`;
-  const response = await fetch(searchUrl);  // fetch page
-  const cheerio = require("cheerio");
+  console.log('searchURL : ' + searchUrl);
 
-  const htmlString = await response.text(); // get response text
+  const response = await fetch(searchUrl);  // fetch page
+  // const cheerio = require("cheerio");
+
+    const htmlString = await response.text(); // get response text
+    // console.log('htmlString : ' + htmlString);
     const $ = cheerio.load(htmlString);       // parse HTML string
-    console.log('try to load : '+ $ );
-  return $("#s-results-list-atf > li")             // select result <li>s
+
+    return $("#s-results-list-atf > li")             // select result <li>s
       .map((_, li) => ({                      // map to an list of objects
         asin: $(li).data("asin"),
         title: $("h2", li).text(),
