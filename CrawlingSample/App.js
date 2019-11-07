@@ -22,31 +22,72 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-export default class extends React.Component {
+export default class App extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { page : 1 , items : [] };
+    }
 
     state = {
-        page: 0,        // 페이지 인덱스
         items: [],      // props를 담을 배열
-        // title: '',      // 제목
-        // url : '',       // 원문 url
-        // date : '',      // 날짜
-        // lead : '',      // 내용
+        page: 0,        // 페이지 인덱스
     };
+
+    // title: '',      // 제목
+    // url : '',       // 원문 url
+    // date : '',      // 날짜
+    // lead : '',      // 내용
 
     /**
      *    setState는 비동기로 동작하므로..
-     *
-     * */
-  getNextPage = () =>
-      this.setState(async state => {
-         console.log("this.setState!");
-        const page = state.page + 1;
-        // const items = await loadGraphicCards(page);
-        const items = await getSportsNews(page);
-        return {items, page};
-      });
+     *     setstate 내부에서 await 호출이 불가능하다?
+     *     비동기로 동작하는 setState대신 mobX 같은 컴포넌트를 사용하는 경우도 많은것 같고
+     *     state는 변경될떄마다 항상 렌더링을 다시 하므로.. 렌더링 필요 여부에 따라서 사용하자
+     *     * */
 
-    componentDidMount = () => this.getNextPage();
+  async getNextPage() {
+
+        const page = this.state.page + 1;
+        const items = await getSportsNews(page);
+
+        this.setState( state => {
+            console.log("this.setState!");
+            // const page = state.page + 1;
+            // const items = await getSportsNews(page);
+            console.log("items length(state) :" + this.state.items.length);
+            console.log("items length(local) :" + items.length);
+            return {items, page};
+        }, callback =>{
+            console.log("setState callback item length :" + this.state.items.length);
+        });
+
+        // getNextPage = () =>
+        //     this.setState(async state => {
+        //         console.log("this.setState!");
+        //         const page = state.page + 1;
+        //         // const items = await loadGraphicCards(page);
+        //         const items = await getSportsNews(page);
+        //         return {items, page};
+        //     });
+
+        // return new Promise(items => {
+        //     this.setState(async items => {
+        //         console.log("this.setState!");
+        //         console.log("items length(state) :" + this.state.items.length);
+        //         console.log("items length(local) :" + items.length);
+        //         console.log("itemValue length(local) :" + itemValue.length);
+        //         return {itemValue, pageValue};
+        //         // items : itemValue;
+        //         //     page : page,
+        //     },items);
+        // });
+    }
+
+
+    componentDidMount(){
+        this.getNextPage();
+    }
 
   render(){
     return(
@@ -55,20 +96,21 @@ export default class extends React.Component {
           <ScrollView>
             {this.state.items.map(item => <Item {...item} key={item.title}/>)}
           </ScrollView>
-            <TouchableOpacity onPress={getSportsNews()}>
-                <Button title="getNextPage"/>
-            </TouchableOpacity>
-            <Text style = {styles.sectionTitle}> get State Items : {this.state.items.length} </Text>
+            {/*<TouchableOpacity onPress={getSportsNews(this.state.page)}>*/}
+                {/*<Button title="getNextPage" />*/}
+            {/*</TouchableOpacity>*/}
+            <Text style = {styles.sectionTitle}> Get State Items : {this.state.items.length} </Text>
           <Text style={styles.footer}>Crolling With Cheerio!</Text>
         </View>
     )}
 };
 
 
+//todo - list layout design , Add list bar event listener(update next page)
 
 async function getSportsNews(page = 1){
 
-    console.log("getSportsNews : " + page);
+    console.log("getSportsNews page : " + page);
 
     // var bodyObj = $('body')[0];  //tag로
     // var divObj = $('#first')[0];  //id 값으로
@@ -96,7 +138,9 @@ async function getSportsNews(page = 1){
     });
 
     // const data = ulList.filter(n => n.title);
-    // console.log('data length: ' + ulList.length);
+    console.log('data length: ' + ulList[0].title);
+    console.log('data length: ' + ulList.length);
+
     return ulList;
 }
 
@@ -129,11 +173,9 @@ async function testJQeuryVol2(){
         };
     });
     const data = ulList.filter(n => n.title);
-    console.log('data length: ' + data.length);
+    // console.log('data length: ' + data.length);
     return data;
 }
-
-
 async function loadGraphicCards(page = 1) {
   const searchUrl = `https://www.amazon.de/s/?page=${page}&keywords=graphic+card`;
   console.log('searchURL : ' + searchUrl);
@@ -154,11 +196,11 @@ async function loadGraphicCards(page = 1) {
 }
 
 const Item = props => (
-    <TouchableOpacity onPress={() => alert("")}>
+    <TouchableOpacity onPress={() => alert(props.lead)}>
       <Text>{props.title}</Text>
       <Image source={{uri: props.url}}/>
       <Text>{props.date}</Text>
-      <Text>{props.lead}</Text>
+      {/*<Text>{props.lead}</Text>*/}
     </TouchableOpacity>
 );
 
