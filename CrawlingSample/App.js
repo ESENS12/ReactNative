@@ -49,7 +49,8 @@ export default class App extends React.Component {
   async getNextPage() {
 
         const page = this.state.page + 1;
-        const items = await getSportsNews(page);
+        // const items = await getSportsNews(page);
+        const item  = getBlogResTest();
 
         this.setState( state => {
             console.log("this.setState!");
@@ -106,11 +107,68 @@ export default class App extends React.Component {
 };
 
 
+
+
+
+
+async function getBlogResTest(){
+
+    // console.log("getSportsNews page : " + page);
+
+    //div id="postListBody" -> div id="post_1" -> table id="printPost1" ->
+
+    // var bodyObj = $('body')[0];  //tag로
+    // var divObj = $('#first')[0];  //id 값으로
+    // var inputJObjs = $('input');  // 해당 tag가 모두 접근된다.
+    // var titleObj = $('input[name=title]')[0]; // input tag이면서 name 속성값이 title인 DOM에 접근
+    // var buttonObj = $('input[type=button]')[0]; // tag와 type값으로 접근
+    // $(.'campaign_wrap).length => class로 판단
+    //blog.naver.com/PostView.nhn?blogId=dutxod2&logNo=221605239025&redirect=Dlog&widgetTypeCall=true&directAccess=true
+    //href="https://m.blog.naver.com/dabin8897/220595332941
+    // 블로그 게시물 체크할때  blogId, logNo(게시물번호) 이 2가지 정보 필요함
+    //$("#postListBody").length = id로 판단
+    let ulList = [];
+    const searchUrl = `http://www.seoulouba.co.kr/html/main.asp`;
+    const response = await fetch(searchUrl);
+    const htmlString = await response.text();
+    //본문까지만 따온다음에,
+    const $ = cheerio.load(htmlString);
+    // const $bodyList = $("div.headline-list ul").children("li.section02");               //ul은 .children을 써도 되고, 안써도 되고..id가 없는경우에 가능한듯
+    const $bodyList = $('[name="campaign_wrap"]').attr('class');
+    console.log($bodyList.length);
+
+    const $bodyList2 = $("div.postListBody");
+    console.log($bodyList2.toString());
+
+
+    // const $bodyList = $("div.headline-list").children("ul").children("li.section02");
+    // const $bodyList = $("div.headline-list.ul li.section02");
+    //
+    // $bodyList.each(function(i, elem) {
+    //     ulList[i] = {
+    //         title: $(this).find('strong.news-tl a').text(),
+    //         // title: $(this).find('strong[name=news-tl]').text(),
+    //         url: $(this).find('strong.news-tl a').attr('href'),
+    //         // image_url: $(this).find('p.poto a img').attr('src'),
+    //         date: $(this).find('span.p-time').text(),
+    //         lead : $(this).find('p.lead').text()
+    //     };
+    // });
+    //
+    // // const data = ulList.filter(n => n.title);
+    console.log('data length: ' + ulList[0].title);
+    console.log('data length: ' + ulList.length);
+
+    return ulList;
+}
+
 //todo - list layout design , Add list bar event listener(update next page)
 
 async function getSportsNews(page = 1){
 
     console.log("getSportsNews page : " + page);
+
+    //div id="postListBody" -> div id="post_1" -> table id="printPost1" ->
 
     // var bodyObj = $('body')[0];  //tag로
     // var divObj = $('#first')[0];  //id 값으로
@@ -121,6 +179,7 @@ async function getSportsNews(page = 1){
     const searchUrl = `https://www.yna.co.kr/sports/all/${page}`;
     const response = await fetch(searchUrl);
     const htmlString = await response.text();
+    //본문까지만 따온다음에,
     const $ = cheerio.load(htmlString);
     // const $bodyList = $("div.headline-list ul").children("li.section02");               //ul은 .children을 써도 되고, 안써도 되고..id가 없는경우에 가능한듯
     const $bodyList = $("div.headline-list").children("ul").children("li.section02");
