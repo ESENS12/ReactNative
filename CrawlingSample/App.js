@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+    TextInput,
   View,
   Text,
   StatusBar,
@@ -22,100 +23,20 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-export default class App extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = { page : 1 , items : [] };
-    }
-
-    state = {
-        items: [],      // props를 담을 배열
-        page: 0,        // 페이지 인덱스
-    };
-
-    // title: '',      // 제목
-    // url : '',       // 원문 url
-    // date : '',      // 날짜
-    // lead : '',      // 내용
-
-    /**
-     *    setState는 비동기로 동작하므로..
-     *     setstate 내부에서 await 호출이 불가능하다?
-     *     비동기로 동작하는 setState대신 mobX 같은 컴포넌트를 사용하는 경우도 많은것 같고
-     *     state는 변경될떄마다 항상 렌더링을 다시 하므로.. 렌더링 필요 여부에 따라서 사용하자
-     *     * */
-
-  async getNextPage() {
-
-        const page = this.state.page + 1;
-        // const items = await getSportsNews(page);
-        const item  = getBlogResTest();
-
-        this.setState( state => {
-            console.log("this.setState!");
-            // const page = state.page + 1;
-            // const items = await getSportsNews(page);
-            console.log("items length(state) :" + this.state.items.length);
-            console.log("items length(local) :" + items.length);
-            return {items, page};
-        }, callback =>{
-            console.log("setState callback item length :" + this.state.items.length);
-        });
-
-        // getNextPage = () =>
-        //     this.setState(async state => {
-        //         console.log("this.setState!");
-        //         const page = state.page + 1;
-        //         // const items = await loadGraphicCards(page);
-        //         const items = await getSportsNews(page);
-        //         return {items, page};
-        //     });
-
-        // return new Promise(items => {
-        //     this.setState(async items => {
-        //         console.log("this.setState!");
-        //         console.log("items length(state) :" + this.state.items.length);
-        //         console.log("items length(local) :" + items.length);
-        //         console.log("itemValue length(local) :" + itemValue.length);
-        //         return {itemValue, pageValue};
-        //         // items : itemValue;
-        //         //     page : page,
-        //     },items);
-        // });
-    }
-
-
-    componentDidMount(){
-        this.getNextPage();
-    }
-
-  render(){
-    return(
-        <View style={styles.container}>
-          <StatusBar barStyle="dark-content" />
-          <ScrollView>
-            {this.state.items.map(item => <Item {...item} key={item.title}/>)}
-          </ScrollView>
-            {/*<TouchableOpacity onPress={getSportsNews(this.state.page)}>*/}
-                {/*<Button title="getNextPage" />*/}
-            {/*</TouchableOpacity>*/}
-            <Text style = {styles.sectionTitle}> Get State Items : {this.state.items.length} </Text>
-          <Text style={styles.footer}>Crolling With Cheerio!</Text>
-        </View>
-    )}
-};
-
-
-
-
-
-
 async function getBlogResTest(){
 
     // console.log("getSportsNews page : " + page);
 
+    //블로그 검색
+    //https://search.naver.com/search.naver?where=post&sm=tab_jum&query=검색어
+    //https://search.naver.com/search.naver?&query=%EC%84%9C%EC%9A%B8%EB%8C%80%EC%9E%85%EA%B5%AC%EC%97%AD%20%ED%95%98%EB%82%A8%EB%8F%BC%EC%A7%80%EC%A7%91&sm=tab_pge&srchby=all&st=sim&where=post&start=11
+    //https://search.naver.com/search.naver?query=%EC%84%9C%EC%9A%B8%EB%8C%80%EC%9E%85%EA%B5%AC%EC%97%AD%20%ED%95%98%EB%82%A8%EB%8F%BC%EC%A7%80%EC%A7%91&where=post&start=11
+    //태그중에서 query, where, start 만 있으면 검색 가능 , query = 검색어, where = blog, start = 11(11..22..33... Start Item number)
+
+    //todo 검색어를 입력받을 edittext를 만들어서 query를 넣어주고. nextpage 버튼 클릭시 다음 item 받아오도록 수정
+
     //div id="postListBody" -> div id="post_1" -> table id="printPost1" ->
+    // ul id elThumbnailResultArea -> li sh_blog_top (class) sp_blog_1(id)
 
     // var bodyObj = $('body')[0];  //tag로
     // var divObj = $('#first')[0];  //id 값으로
@@ -123,6 +44,8 @@ async function getBlogResTest(){
     // var titleObj = $('input[name=title]')[0]; // input tag이면서 name 속성값이 title인 DOM에 접근
     // var buttonObj = $('input[type=button]')[0]; // tag와 type값으로 접근
     // $(.'campaign_wrap).length => class로 판단
+
+
     //blog.naver.com/PostView.nhn?blogId=dutxod2&logNo=221605239025&redirect=Dlog&widgetTypeCall=true&directAccess=true
     //href="https://m.blog.naver.com/dabin8897/220595332941
     // 블로그 게시물 체크할때  blogId, logNo(게시물번호) 이 2가지 정보 필요함
@@ -131,29 +54,27 @@ async function getBlogResTest(){
     const searchUrl = `http://www.seoulouba.co.kr/html/main.asp`;
     const response = await fetch(searchUrl);
     const htmlString = await response.text();
-    //본문까지만 따온다음에,
     const $ = cheerio.load(htmlString);
-    // const $bodyList = $("div.headline-list ul").children("li.section02");               //ul은 .children을 써도 되고, 안써도 되고..id가 없는경우에 가능한듯
-    const $bodyList = $('[name="campaign_wrap"]').attr('class');
-    console.log($bodyList.length);
+    // const $bodyList = $('[name="campaign_wrap"]').attr('class');
+    // console.log($bodyList.length);
 
     const $bodyList2 = $("div.postListBody");
     console.log($bodyList2.toString());
 
 
     // const $bodyList = $("div.headline-list").children("ul").children("li.section02");
-    // const $bodyList = $("div.headline-list.ul li.section02");
-    //
-    // $bodyList.each(function(i, elem) {
-    //     ulList[i] = {
-    //         title: $(this).find('strong.news-tl a').text(),
-    //         // title: $(this).find('strong[name=news-tl]').text(),
-    //         url: $(this).find('strong.news-tl a').attr('href'),
-    //         // image_url: $(this).find('p.poto a img').attr('src'),
-    //         date: $(this).find('span.p-time').text(),
-    //         lead : $(this).find('p.lead').text()
-    //     };
-    // });
+    const $bodyList = $("div.headline-list.ul li.section02");
+
+    $bodyList.each(function(i, elem) {
+        ulList[i] = {
+            title: $(this).find('strong.news-tl a').text(),
+            // title: $(this).find('strong[name=news-tl]').text(),
+            url: $(this).find('strong.news-tl a').attr('href'),
+            // image_url: $(this).find('p.poto a img').attr('src'),
+            date: $(this).find('span.p-time').text(),
+            lead : $(this).find('p.lead').text()
+        };
+    });
     //
     // // const data = ulList.filter(n => n.title);
     console.log('data length: ' + ulList[0].title);
@@ -202,8 +123,6 @@ async function getSportsNews(page = 1){
 
     return ulList;
 }
-
-
 async function testJQeuryVol2(){
 
     // var bodyObj = $('body')[0];  //tag로
@@ -255,6 +174,7 @@ async function loadGraphicCards(page = 1) {
 }
 
 const Item = props => (
+
     <TouchableOpacity onPress={() => alert(props.lead)}>
       <Text>{props.title}</Text>
       <Image source={{uri: props.url}}/>
@@ -262,6 +182,103 @@ const Item = props => (
       {/*<Text>{props.lead}</Text>*/}
     </TouchableOpacity>
 );
+
+
+
+
+export default class App extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { page : 1 , items : [], searchQuery : "query", };
+    }
+
+    // state = {
+    //     items: [],      // props를 담을 배열
+    //     page: 0,        // 페이지 인덱스
+    //     searchQuery,    // 검색어
+    // };
+
+    // title: '',      // 제목
+    // url : '',       // 원문 url
+    // date : '',      // 날짜
+    // lead : '',      // 내용
+
+    /**
+     *    setState는 비동기로 동작하므로..
+     *     setstate 내부에서 await 호출이 불가능하다?
+     *     비동기로 동작하는 setState대신 mobX 같은 컴포넌트를 사용하는 경우도 많은것 같고
+     *     state는 변경될떄마다 항상 렌더링을 다시 하므로.. 렌더링 필요 여부에 따라서 사용하자
+     *     * */
+
+    async getNextPage() {
+
+        const page = this.state.page + 1;
+        const items = await getSportsNews(page);
+        // const item  = await getBlogResTest();
+
+        this.setState( state => {
+            console.log("this.setState!");
+            // const page = state.page + 1;
+            // const items = await getSportsNews(page);
+            console.log("items length(state) :" + this.state.items.length);
+            console.log("items length(local) :" + items.length);
+            return {items, page};
+        }, callback =>{
+            console.log("setState callback item length :" + this.state.items.length);
+        });
+
+        // getNextPage = () =>
+        //     this.setState(async state => {
+        //         console.log("this.setState!");
+        //         const page = state.page + 1;
+        //         // const items = await loadGraphicCards(page);
+        //         const items = await getSportsNews(page);
+        //         return {items, page};
+        //     });
+
+        // return new Promise(items => {
+        //     this.setState(async items => {
+        //         console.log("this.setState!");
+        //         console.log("items length(state) :" + this.state.items.length);
+        //         console.log("items length(local) :" + items.length);
+        //         console.log("itemValue length(local) :" + itemValue.length);
+        //         return {itemValue, pageValue};
+        //         // items : itemValue;
+        //         //     page : page,
+        //     },items);
+        // });
+    }
+
+
+    componentDidMount(){
+        this.getNextPage();
+    }
+
+    render(){
+        return(
+            <View style={styles.container}>
+                <StatusBar barStyle="dark-content" />
+                <Text style={styles.sectionDescription}>Search Query : </Text>
+                <TextInput
+                    style={{height: 40}}
+                    placeholder="SearchQuery"
+                    // onChangeText={(text) => this.setState({text})}
+                    // value={this.state.searchQuery}
+                />
+                <ScrollView>
+                    {this.state.items.map(item => <Item {...item} key={item.title}/>)}
+                </ScrollView>
+                {/*<TouchableOpacity onPress={getSportsNews(this.state.page)}>*/}
+                    {/*<Button title="getNextPage" />*/}
+                {/*</TouchableOpacity>*/}
+                <Text style = {styles.sectionTitle}> Get State Items : {this.state.items.length} </Text>
+                <Text style={styles.footer}>Crolling With Cheerio!</Text>
+            </View>
+        )}
+};
+
+
 
 
 
@@ -289,7 +306,8 @@ const styles = StyleSheet.create({
     color: Colors.black,
   },
   sectionDescription: {
-    marginTop: 8,
+    marginTop: 35,
+      marginLeft : 10,
     fontSize: 18,
     fontWeight: '400',
     color: Colors.dark,
