@@ -23,7 +23,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-async function getBlogResTest(){
+async function getBlogResTest(searchQuery, page){
 
     // console.log("getSportsNews page : " + page);
 
@@ -48,37 +48,42 @@ async function getBlogResTest(){
 
     //blog.naver.com/PostView.nhn?blogId=dutxod2&logNo=221605239025&redirect=Dlog&widgetTypeCall=true&directAccess=true
     //href="https://m.blog.naver.com/dabin8897/220595332941
+    //todo 자꾸 mobile로 reponse가 넘어오는 문제가있는데...어차피 단말에서 돌릴 거니깐.....모바일로 하자....
+
     // 블로그 게시물 체크할때  blogId, logNo(게시물번호) 이 2가지 정보 필요함
     //$("#postListBody").length = id로 판단
     let ulList = [];
-    const searchUrl = `http://www.seoulouba.co.kr/html/main.asp`;
+    const searchUrl = `https://search.naver.com/search.naver?query=${searchQuery}&sm=tab_pge&srchby=all&st=sim&where=post&start=${page}`;
     const response = await fetch(searchUrl);
     const htmlString = await response.text();
     const $ = cheerio.load(htmlString);
+
     // const $bodyList = $('[name="campaign_wrap"]').attr('class');
     // console.log($bodyList.length);
 
-    const $bodyList2 = $("div.postListBody");
-    console.log($bodyList2.toString());
+    //div main_pack -> div class blog section _blogBase _prs_blg
+    //ul elThumbnailResultArea -> li class sh_blog_top
+
+    const $bodyList = $("div.main_pack").children(".blog.section._blogBase._prs_blg").children("ul").children("li.sh_blog_top");//클래스에 공백이 들어가는 경우는 .로 치환(모두 선택할수밖에 없음)
+    console.log("li length : "+$bodyList.length);
 
 
     // const $bodyList = $("div.headline-list").children("ul").children("li.section02");
-    const $bodyList = $("div.headline-list.ul li.section02");
+    // const $bodyList = $("div.headline-list.ul li.section02");
 
     $bodyList.each(function(i, elem) {
         ulList[i] = {
-            title: $(this).find('strong.news-tl a').text(),
+            title: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('title'),
             // title: $(this).find('strong[name=news-tl]').text(),
-            url: $(this).find('strong.news-tl a').attr('href'),
+            // url: $(this).find('strong.news-tl a').attr('href'),
             // image_url: $(this).find('p.poto a img').attr('src'),
-            date: $(this).find('span.p-time').text(),
-            lead : $(this).find('p.lead').text()
+            // date: $(this).find('span.p-time').text(),
+            // lead : $(this).find('p.lead').text()
         };
     });
-    //
+
     // // const data = ulList.filter(n => n.title);
-    console.log('data length: ' + ulList[0].title);
-    console.log('data length: ' + ulList.length);
+    console.log('data title: ' + ulList[0].title);
 
     return ulList;
 }
@@ -190,7 +195,12 @@ export default class App extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { page : 1 , items : [], searchQuery : "query", };
+        this.state = {
+            page : 1 ,
+            items : [],
+            searchQuery : "맵당 신천점",
+
+        };
     }
 
     // state = {
@@ -214,8 +224,8 @@ export default class App extends React.Component {
     async getNextPage() {
 
         const page = this.state.page + 1;
-        const items = await getSportsNews(page);
-        // const item  = await getBlogResTest();
+        // const items = await getSportsNews(page);
+        const items  = await getBlogResTest();
 
         this.setState( state => {
             console.log("this.setState!");
@@ -252,7 +262,7 @@ export default class App extends React.Component {
 
 
     componentDidMount(){
-        this.getNextPage();
+        // this.getNextPage();
     }
 
     render(){
@@ -263,15 +273,15 @@ export default class App extends React.Component {
                 <TextInput
                     style={{height: 40}}
                     placeholder="SearchQuery"
-                    // onChangeText={(text) => this.setState({text})}
-                    // value={this.state.searchQuery}
+                    onChangeText={(searchQuery) => this.setState({searchQuery : searchQuery})}
+                    value={this.state.searchQuery}
                 />
                 <ScrollView>
                     {this.state.items.map(item => <Item {...item} key={item.title}/>)}
                 </ScrollView>
-                {/*<TouchableOpacity onPress={getSportsNews(this.state.page)}>*/}
-                    {/*<Button title="getNextPage" />*/}
-                {/*</TouchableOpacity>*/}
+                <TouchableOpacity onPress={getBlogResTest(this.state.searchQuery,this.state.page)}>
+                    <Button title="getSearchList" />
+                </TouchableOpacity>
                 <Text style = {styles.sectionTitle}> Get State Items : {this.state.items.length} </Text>
                 <Text style={styles.footer}>Crolling With Cheerio!</Text>
             </View>
