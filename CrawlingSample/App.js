@@ -95,26 +95,28 @@ export default class App extends React.Component {
         };
     }
 
+    _onPressTest(){
+        const page = this.state.page+1;
+        console.log("onPress : " + page);
+        this.setState({page : page});
+    }
+
+    //todo 마지막 페이지 감지, 검색결과에서 광고, 비광고 list 거르기 , items에 push하니까 이전결과 날아감,(list array handling) 아니면 아예 방식 바꿔서 paging 처리..or infinity scroll style
+
 
     async getNextPage() {
 
-        const page = this.state.page + 1;
+        const page = this.state.page+1;
         // const items = await getSportsNews(page);
         const items  = await getBlogResTest(this.state.searchQuery,this.state.page);
 
         this.setState( state => {
-            // console.log("this.setState!");
-            // const page = state.page + 1;
-            // const items = await getSportsNews(page);
-            // console.log("items length(state) :" + this.state.items.length);
-            // console.log("items length(local) :" + items.length);
-            return {items, page};
+            return {items : state.items.add(items), page};
         }, callback =>{
-            // console.log("setState callback item length :" + this.state.items.length);
+
         });
 
     }
-
 
     componentDidMount(){
         this.getNextPage();
@@ -138,10 +140,9 @@ export default class App extends React.Component {
                     {this.state.items.map(item => <Item {...item} key={item.title}/>)}
                 </ScrollView>
                 {/*<TouchableOpacity onPress={getBlogResTest(this.state.searchQuery,this.state.page)}>*/}
-                {/*<TouchableOpacity onPress={this.getNextPage()}>*/}
-                    {/*<Button title="getNextPage" />*/}
+                {/*<TouchableOpacity>*/}
+                <Button title="getNextPage" onPress={ ()=> this.getNextPage()}/>
                 {/*</TouchableOpacity>*/}
-                {/*<Text style = {styles.sectionTitle}> Get State Items : {this.state.items.length} </Text>*/}
                 <Text style={styles.footer}>Crolling With Cheerio!</Text>
             </View>
         )}
@@ -239,8 +240,6 @@ const styles = StyleSheet.create({
         paddingRight: 12,
         textAlign: 'right',
     },
-
-
 
 });
 
