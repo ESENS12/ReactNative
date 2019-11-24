@@ -77,6 +77,7 @@ async function getBlogResTest(searchQuery, page){
 const Item = props => (
 
     <TouchableOpacity style={styles.listItemParent}>
+        <Text style={styles.listItemText}> {props.index} </Text>
         <Text style={styles.listItemText}> {props.title} </Text>
         <Text style={styles.listItemURL}> {props.url} </Text>
       {/*<Text>{props.date}</Text>*/}
@@ -108,10 +109,10 @@ export default class App extends React.Component {
 
         const page = this.state.page+1;
         // const items = await getSportsNews(page);
-        const items  = await getBlogResTest(this.state.searchQuery,this.state.page);
+        const getItemRes  = await getBlogResTest(this.state.searchQuery,this.state.page);
 
         this.setState( state => {
-            return {items : state.items.add(items), page};
+            return {items : this.state.items.concat(getItemRes), page};
         }, callback =>{
 
         });
@@ -137,7 +138,7 @@ export default class App extends React.Component {
                 </View>
 
                 <ScrollView>
-                    {this.state.items.map(item => <Item {...item} key={item.title}/>)}
+                    {this.state.items.map(item => <Item {...item} key={item.title} />)}
                 </ScrollView>
                 {/*<TouchableOpacity onPress={getBlogResTest(this.state.searchQuery,this.state.page)}>*/}
                 {/*<TouchableOpacity>*/}
