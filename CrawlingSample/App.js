@@ -23,6 +23,11 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+var itemIndex = 0;
+
+
+
+
 async function getBlogResTest(searchQuery, page){
 
     //todo 검색어 edittext 텍스트 내용 바뀔때마다 setState해주면서 Re-rendering -> Crawling까지 .. UI 구조랑 백엔드 구조가 강결합되어있는 형태를 느슨하게 바꿔야함
@@ -56,8 +61,10 @@ async function getBlogResTest(searchQuery, page){
     console.log("result items : "+$bodyList.length);
 
     $bodyList.each(function(i, elem) {
+        itemIndex += 1;
         ulList[i] = {
             title: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('title'),
+            index : itemIndex,
             // title: $(this).find('strong[name=news-tl]').text(),
             url: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('href'),
             // image_url: $(this).find('p.poto a img').attr('src'),
@@ -66,8 +73,14 @@ async function getBlogResTest(searchQuery, page){
         };
     });
 
-    // // const data = ulList.filter(n => n.title);
-    console.log('data title: ' + ulList[0].title);
+    //애초에 리스트에 add 할때 조건따라서 넣는 방식 or 검색결과 리스트와, 광고형, 비광고형 리스트 별도로 관리하던가(UI 레벨에서 광고형은 배경색이 있다던지 하는 형태로..?)
+    for (let i = 0; i < ulList.length; i++) {
+        const searchUrl = ulList[i].url.replace("https://","https://m.");
+        console.log("searchUrl : " + searchUrl);
+        // const response = await fetch(searchUrl);
+        // const htmlString = await response.text();
+        // const $ = cheerio.load(htmlString);
+    }
 
     return ulList;
 }
@@ -89,10 +102,12 @@ export default class App extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             page : 1 ,
             items : [],
             searchQuery : "맵당 신천점",
+            itemIndex : 1,
         };
     }
 
@@ -104,6 +119,18 @@ export default class App extends React.Component {
 
     //todo 마지막 페이지 감지, 검색결과에서 광고, 비광고 list 거르기 , items에 push하니까 이전결과 날아감,(list array handling) 아니면 아예 방식 바꿔서 paging 처리..or infinity scroll style
 
+    _searchIt(){
+        const items = this.state.items;
+        const page = this.state.page;
+        const itemIndex  = this.state.itemIndex;
+
+        this.setState(state => {
+            return {items : [], page : 0, itemIndex : 0};
+        }, callback =>{
+            this.getNextPage();
+        });
+
+    }
 
     async getNextPage() {
 
@@ -114,7 +141,7 @@ export default class App extends React.Component {
         this.setState( state => {
             return {items : this.state.items.concat(getItemRes), page};
         }, callback =>{
-
+            // console.log("item size : " + this.state.items.length);
         });
 
     }
@@ -136,11 +163,11 @@ export default class App extends React.Component {
                         value={this.state.searchQuery}
                     />
                 </View>
+                <Button title="Search it!" onPress={ ()=> this._searchIt()} />
 
                 <ScrollView>
-                    {this.state.items.map(item => <Item {...item} key={item.title} />)}
+                    {this.state.items.map(item => <Item {...item} />)}
                 </ScrollView>
-                {/*<TouchableOpacity onPress={getBlogResTest(this.state.searchQuery,this.state.page)}>*/}
                 {/*<TouchableOpacity>*/}
                 <Button title="getNextPage" onPress={ ()=> this.getNextPage()}/>
                 {/*</TouchableOpacity>*/}
@@ -148,6 +175,7 @@ export default class App extends React.Component {
             </View>
         )}
 };
+
 
 const styles = StyleSheet.create({
 
