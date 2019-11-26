@@ -56,7 +56,8 @@ async function getBlogResTest(searchQuery, page){
     const htmlString = await response.text();
     const $ = cheerio.load(htmlString);
 
-    const $bodyList = $("div.main_pack").children(".blog.section._blogBase._prs_blg").children("ul").children("li.sh_blog_top"); //클래스에 공백이 들어가는 경우는 .로 치환(모두 선택할수밖에 없음)
+    // const $bodyList = $("div.main_pack").children(".blog.section._blogBase._prs_blg").children("ul").children("li.sh_blog_top"); //클래스에 공백이 들어가는 경우는 .로 치환(모두 선택할수밖에 없음)
+    const $bodyList = $("li.sh_blog_top");
 
     console.log("result items : "+$bodyList.length);
 
@@ -73,13 +74,46 @@ async function getBlogResTest(searchQuery, page){
         };
     });
 
+
     //애초에 리스트에 add 할때 조건따라서 넣는 방식 or 검색결과 리스트와, 광고형, 비광고형 리스트 별도로 관리하던가(UI 레벨에서 광고형은 배경색이 있다던지 하는 형태로..?)
     for (let i = 0; i < ulList.length; i++) {
         const searchUrl = ulList[i].url.replace("https://","https://m.");
         console.log("searchUrl : " + searchUrl);
-        // const response = await fetch(searchUrl);
-        // const htmlString = await response.text();
-        // const $ = cheerio.load(htmlString);
+        const response = await fetch(searchUrl);
+        const htmlString = await response.text();
+        const $ = cheerio.load(htmlString);
+
+        //todo blog.me type parsing exception
+        console.log('$() : ' + $("#viewTypeSelector").length);
+
+        //$(".se-component.se-image a") 후손태그를 selector로 해서 , for 로 linkdata attr불러온다음 has contain 체크 후 ulList[i]에 boolean type 속성 추가 해주면 된다.
+        console.log('$() image  : ' + $(".se-component.se-image a").length);
+        // console.log('$() image  : ' + $(".se-component.se-image a").attr('data-linkdata'));
+
+        // const $blog_bodyList = $("#_post_area").children("#ct").children("._postView").children("#viewTypeSelector").children().children(".se-main-container");
+        const $blog_bodyList = $("#viewTypeSelector").children().children(".se-main-container");
+        console.log('$blog_bodyList ' + $blog_bodyList.length);
+
+        //todo  component.image type 속성에 대해서 and연산이 아닌 or 연산도 적용되는지 확인해야함
+        console.log('image : ' + $("#viewTypeSelector").children().children(".se-main-container").children(".se-component.se-image.se-l-default").length);
+    // class="se-component se-image se-l-default"
+        // const as = $bodyList.querySelectorAll('a');
+        // for (let i = 0; i < as.length; i++) {
+        //     const elem = as[i];
+        //     console.log("elem : " + elem);
+        // }
+        // console.log("select All : "  + $bodyList.querySelectorAll('a'));
+
+        // NodeList.prototype.forEach = Array.prototype.forEach;
+        // let children = $bodyList.childNodes;
+        // children.forEach(function(item){
+        //     console.log(item);
+        // });
+
+        //
+        // $bodyList.each(function (i, elem) {
+        //     console.log()
+        // });
     }
 
     return ulList;
