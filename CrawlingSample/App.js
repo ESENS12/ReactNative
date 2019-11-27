@@ -26,7 +26,18 @@ import {
 var itemIndex = 0;
 
 
+const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
 
+//스토리앤 -> 스토리앤
+//서울오빠 -> http://www.seoulouba.co.kr/
+//레뷰(구 위블) -> https://www.revu.net/
+//위블(현 레뷰) -> https://www.weble.net/
+//오마이블로그 -> http://www.ohmyblog.co.kr // 특이사항 : tracking하지 않는 걸로 보임, img src 내부 아닌 href에 url이 박혀있는경우 있었음
+//미블    -> mrblog.net
+//티블    -> www.tble.kr
+//어메이징블로그
+//파블로체험단
+//디너의 여왕 -> https://dinnerqueen.net/
 
 async function getBlogResTest(searchQuery, page){
 
@@ -77,49 +88,57 @@ async function getBlogResTest(searchQuery, page){
 
     //애초에 리스트에 add 할때 조건따라서 넣는 방식 or 검색결과 리스트와, 광고형, 비광고형 리스트 별도로 관리하던가(UI 레벨에서 광고형은 배경색이 있다던지 하는 형태로..?)
     for (let i = 0; i < ulList.length; i++) {
-        const searchUrl = ulList[i].url.replace("https://","https://m.");
-        console.log("searchUrl : " + searchUrl);
-        const response = await fetch(searchUrl);
+        const url = ulList[i].url;
+        let blogUrl = "";
+
+        if(url.includes("blog.me")){
+            let nickName = url.substring(url.indexOf("/") + 2 , url.indexOf("."));
+            let postNumber = url.substring(url.lastIndexOf("/")+1);
+            // https://m.blog.naver.com/conanronse?Redirect=Log&logNo=221607525803
+            blogUrl = "https://m.blog.naver.com/" + nickName + "?Redirect=Log&logNo=" + postNumber;
+        }else{
+            blogUrl = ulList[i].url.replace("https://","https://m.");
+        }
+
+        console.log("=========================================");
+        console.log("blogUrl : " + blogUrl);
+        const response = await fetch(blogUrl);
         const htmlString = await response.text();
         const $ = cheerio.load(htmlString);
 
         //todo blog.me type parsing exception
+
         console.log('$() : ' + $("#viewTypeSelector").length);
 
         //$(".se-component.se-image a") 후손태그를 selector로 해서 , for 로 linkdata attr불러온다음 has contain 체크 후 ulList[i]에 boolean type 속성 추가 해주면 된다.
         console.log('$() image  : ' + $(".se-component.se-image a").length);
-        // console.log('$() image  : ' + $(".se-component.se-image a").attr('data-linkdata'));
+        // console.log('$() linkdata  : ' + $(".se-component.se-image a").attr('data-linkdata'));
+        const $linkData = $(".se-component.se-image a");
 
-        // const $blog_bodyList = $("#_post_area").children("#ct").children("._postView").children("#viewTypeSelector").children().children(".se-main-container");
-        const $blog_bodyList = $("#viewTypeSelector").children().children(".se-main-container");
-        console.log('$blog_bodyList ' + $blog_bodyList.length);
+        $linkData.each(function(i, elem) {
+            // console.log("i : " + i);
+            // console.log("elem : " + elem);
+            const atagData = $(this).attr('data-linkdata');
+            // console.log(atagData);
+            //todo negative or positive 방식 테스트 해봐야함
+            // if(atagData.includes("pstatic.net")){
+            //     console.log("maybe this is not Fake Tag");
+            // }
+            if(atagData != null){
 
-        //todo  component.image type 속성에 대해서 and연산이 아닌 or 연산도 적용되는지 확인해야함
-        console.log('image : ' + $("#viewTypeSelector").children().children(".se-main-container").children(".se-component.se-image.se-l-default").length);
-    // class="se-component se-image se-l-default"
-        // const as = $bodyList.querySelectorAll('a');
-        // for (let i = 0; i < as.length; i++) {
-        //     const elem = as[i];
-        //     console.log("elem : " + elem);
-        // }
-        // console.log("select All : "  + $bodyList.querySelectorAll('a'));
-
-        // NodeList.prototype.forEach = Array.prototype.forEach;
-        // let children = $bodyList.childNodes;
-        // children.forEach(function(item){
-        //     console.log(item);
-        // });
-
-        //
-        // $bodyList.each(function (i, elem) {
-        //     console.log()
-        // });
+                for (let j = 0; j < fakeBlogKeywordList.length; j++) {
+                    let fake = fakeBlogKeywordList[j];
+                    if(atagData.includes(fake)){
+                        console.log("this is Fake post : " + atagData);
+                        console.log("from : " + fake);
+                    }
+                }
+            }
+        });
     }
 
     return ulList;
 }
-
-// {/*<TouchableOpacity onPress={() => alert(props.lead)}>*/}
 
 const Item = props => (
 
