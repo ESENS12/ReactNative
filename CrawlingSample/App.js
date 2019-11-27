@@ -28,6 +28,19 @@ var itemIndex = 0;
 
 const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
 
+/*
+쉬즈블로그
+디너의여왕
+에코블로그
+포블로그
+리뷰플레이스
+티블
+놀러와체험단 = 이슈블로그 = 허니블로그
+오른쪽방향으로 놀러와 체험단에서 파생된 체험단
+미블
+리얼리뷰
+* */
+
 //스토리앤 -> 스토리앤
 //서울오빠 -> http://www.seoulouba.co.kr/
 //레뷰(구 위블) -> https://www.revu.net/
