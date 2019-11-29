@@ -3,4 +3,7 @@
 
 
 #References
-Crawling Sample (https://github.com/ESENS12/ReactNative/tree/master/CrawlingSample)
+- Crawling Sample (https://github.com/ESENS12/ReactNative/tree/master/CrawlingSample)
+- npm i cheerio-without-node-native@0.20.2
+- npm i htmlparser2-without-node-native
+
