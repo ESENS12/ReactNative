@@ -22,6 +22,7 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import {arrowFunctionExpression} from '@babel/types';
 
 const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
 
@@ -71,6 +72,7 @@ async function getBlogRes(searchQuery, page){
 
     ulList[i] = {
       title: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('title'),
+      isFake : false,
       // index : itemIndex,
       // title: $(this).find('strong[name=news-tl]').text(),
       url: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('href'),
@@ -87,6 +89,7 @@ async function getBlogRes(searchQuery, page){
   for (let i = 0; i < ulList.length; i++) {
     const url = ulList[i].url;
     let blogUrl = "";
+    let b_isFake = false;
 
     if(url.includes("blog.me")){
       let nickName = url.substring(url.indexOf("/") + 2 , url.indexOf("."));
@@ -103,11 +106,8 @@ async function getBlogRes(searchQuery, page){
     const htmlString = await response.text();
     const $ = cheerio.load(htmlString);
 
-    // console.log('$() : ' + $("#viewTypeSelector").length);
-
-    //$(".se-component.se-image a") 후손태그를 selector로 해서 , for 로 linkdata attr불러온다음 has contain 체크 후 ulList[i]에 boolean type 속성 추가 해주면 된다.
     console.log('$() image  : ' + $(".se-component.se-image a").length);
-    // console.log('$() linkdata  : ' + $(".se-component.se-image a").attr('data-linkdata'));
+
     const $linkData = $(".se-component.se-image a");
     let fakeNum = 0;
 
@@ -129,27 +129,34 @@ async function getBlogRes(searchQuery, page){
           if(atagData.includes(fake)){
             console.log("this is Fake post : " + atagData);
             console.log("from : " + fake);
+            b_isFake = true;
           }
         }
       }
     });
+
+    ulList[i].isFake = b_isFake;
     console.log("not Fake Image TagNum : " + fakeNum );
+    console.log("ulList[i].isFake : " + ulList[i].isFake );
   }
-
-
   return ulList;
 }
 
-const Item = props => (
+const Item = (props) => {
 
+  if (props.isFake) {
+    return null
+  }
+
+  return (
     <TouchableOpacity style={styles.listItemParent}>
-      {/*<Text style={styles.listItemText}> {props.index} </Text>*/}
-      <Text style={styles.listItemText}> {props.title} </Text>
-      <Text style={styles.listItemURL}> {props.url} </Text>
-      {/*<Text>{props.date}</Text>*/}
-      {/*<Text>{props.lead}</Text>*/}
+        {/*<Text style={styles.listItemText}> {props.index} </Text>*/}
+        <Text style={styles.listItemText}> {props.title} </Text>
+        <Text style={styles.listItemURL}> {props.url} </Text>
+        {/*<Text>{props.lead}</Text>*/}
     </TouchableOpacity>
-);
+  )
+};
 
 export default class App extends React.Component {
 
@@ -159,7 +166,7 @@ export default class App extends React.Component {
     this.state = {
       page : 1 ,
       items : [],
-      searchQuery : "강남 맛집",
+      searchQuery : "서울대입구역 하남돼지집",
       itemIndex : 1,
     };
   }
@@ -178,7 +185,7 @@ export default class App extends React.Component {
 
   }
 
-  //다음 페이지 로딩하여 Item Update(누적되지 않음)
+  //다음 페이지 로딩하여 Item Update
   async getNextPage() {
 
     const page = this.state.page+10;
@@ -198,7 +205,6 @@ export default class App extends React.Component {
     this.getNextPage();
   }
 
-  //리스트뷰지만 최대 10개까지만 표출한다
   render(){
     return(
         <View style={styles.container}>
@@ -215,7 +221,7 @@ export default class App extends React.Component {
           <Button title="Search it!" onPress={ ()=> this._searchIt()} />
 
           <ScrollView>
-            {this.state.items.map(item => <Item {...item} />)}
+            { this.state.items.map(item=> <Item {...item} />) }
           </ScrollView>
           {/*<TouchableOpacity>*/}
           <Button title="SearchMore" onPress={ ()=> this.getNextPage()}/>
