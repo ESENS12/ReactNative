@@ -1,114 +1,170 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import React, {useState, Component } from 'react';
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import styled from "styled-components/native"; // 3.1.6
+import Carousel from 'react-native-snap-carousel'; // 3.6.0
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import{
+    ScrollView,
+    View,
+}from 'react-native';
+import {CarouselCardView} from './CarouselCardView';
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
+const Item = ( props ) => {
+    //
+    // if (props.isFake) {
+    //     return null
+    // }
+    console.log("props : " + props);
+    console.log("index : " + props.index);
+
+    return (
+        <CarouselBackgroundView>
+            <Carousel
+                ref={'carousel'}
+                data={props}
+                renderItem={this.refs['carousel']._renderItem(this)}
+                sliderWidth={360}
+                itemWidth={256}
+                layout={'default'}
+                firstItem={0}
+            />
+        </CarouselBackgroundView>
+    )
 };
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
 
-export default App;
+
+export default class App extends Component {
+
+
+  constructor(props){
+    super();
+    this.state = {
+      errors: []
+    };
+    this.props = props;
+    this._carousel = [];
+    this.init();
+  }
+
+  init(){
+    this.state = {
+      videos: [
+        {
+            thumbnails : [
+              "https://img.youtube.com/vi/sNPnbI1arSE/hqdefault.jpg",
+               "https://img.youtube.com/vi/sNPnbI1arSE/hqdefault.jpg",
+                "https://img.youtube.com/vi/sNPnbI1arSE/hqdefault.jpg",],
+        }, {
+              thumbnails :  [
+                  "https://img.youtube.com/vi/D9ioyEvdggk/hqdefault.jpg",
+                  "https://img.youtube.com/vi/D9ioyEvdggk/hqdefault.jpg",
+                  "https://img.youtube.com/vi/D9ioyEvdggk/hqdefault.jpg",],
+        }, {
+              thumbnails :  [
+                  "https://img.youtube.com/vi/VOgFZfRVaww/hqdefault.jpg",
+                  "https://img.youtube.com/vi/VOgFZfRVaww/hqdefault.jpg",
+                  "https://img.youtube.com/vi/VOgFZfRVaww/hqdefault.jpg",],
+        },
+      ]
+    };
+    // console.log("ThumbnailCarousel Props: ", this.props)
+  }
+
+  handleSnapToItem(index){
+    console.log("snapped to ", index)
+  }
+
+  _renderItem = ( {item, index} ) => {
+    console.log("rendering,", index, item);
+    return (
+        <ThumbnailBackgroundView>
+          <CurrentVideoTO
+              onPress={ () => {
+                console.log("clicked to index", index);
+                this._carousel.snapToItem(index);
+              }}
+          >
+            <CurrentVideoImage source={{ uri: item.thumbnails[0] }} />
+          </CurrentVideoTO>
+          {/*<NextVideoImage source={{ uri: this.state.currentVideo.nextVideoId }}/>*/}
+          {/*<VideoTitleText>{item.title}</VideoTitleText>*/}
+        </ThumbnailBackgroundView>
+    );
+  };
+
+  render = () => {
+
+    console.log("videos: updating");
+    // const [videos, setVideos] = useState([]);
+
+    return (
+
+        <View>
+            <ScrollView>
+
+                <CarouselBackgroundView>
+                    <Carousel
+                        ref={ (c) => { this._carousel = c; } }
+                        data={this.state.videos}
+                        renderItem={this._renderItem.bind(this)}
+                        onSnapToItem={this.handleSnapToItem.bind(this)}
+                        sliderWidth={360}
+                        itemWidth={256}
+                        layout={'default'}
+                        firstItem={0}
+                    />
+                </CarouselBackgroundView>
+
+                <CarouselBackgroundView>
+                    <Carousel
+                        ref={ (c) => { this._carousel = c; } }
+                        data={this.state.videos}
+                        renderItem={this._renderItem.bind(this)}
+                        onSnapToItem={this.handleSnapToItem.bind(this)}
+                        sliderWidth={360}
+                        itemWidth={256}
+                        layout={'default'}
+                        firstItem={0}
+                    />
+                </CarouselBackgroundView>
+
+                {/*{ this.state.videos.map(item => <CarouselCardView {...item} />) }*/}
+            </ScrollView>
+
+
+        </View>
+    );
+  }
+}
+
+
+const VideoTitleText = styled.Text`
+  color: white;
+  top: 28;
+  justify-content: center;
+`;
+
+const CurrentVideoImage = styled.Image`
+  top: 25;
+  box-shadow: 5px 10px;
+  width: 256;
+  height: 144;
+  border-radius: 10;
+`;
+
+const ThumbnailBackgroundView = styled.View`
+  justify-content: center;
+  align-items: center;
+  width: 256; 
+`;
+
+const CurrentVideoTO = styled.TouchableOpacity`
+`;
+
+const CarouselBackgroundView = styled.View`
+  background-color: black;
+  height: 200;
+  width: 100%;
+`;
+
