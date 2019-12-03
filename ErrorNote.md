@@ -3,7 +3,7 @@ Command `run-android` unrecognized. Make sure that you have run `npm install` an
 
 1. 프로젝트 생성, nom install 한 후 뭐 init이니 뭐니 해본 상태
 2. 웹스톰 프로젝트 생성시에 react native를 local에 설치된 놈으로 하지말고 (/usr/local/lib/node_modules/react-native-cli)
-3. 'npx —-package react-native-cli react-native' 로 프로젝트 생성 할것
+3. 'npx --package react-native-cli react-native' 로 프로젝트 생성 할것
 
 
 # eslint 관련
