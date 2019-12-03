@@ -28,7 +28,7 @@ export default class App extends Component {
     return (
         <>
           <StatusBar barStyle="dark-content" />
-          <MyWebview/>
+          <MyWebview uri = 'https://m.naver.com' />
         </>
     );
   }
