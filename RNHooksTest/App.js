@@ -13,7 +13,12 @@ import {
 
 import { useCameraRoll } from 'react-native-hooks'
 
-import { GetAlbum,GetPhoto } from './CameraRoll'
+import { GetAlbum } from './CameraRoll'
+import { CurrentAppState  } from './AppState'
+import { Clipboard  } from './Clipboard'
+import { Layout  } from './Layout'
+import { BackHandler  } from './BackHandler'
+import { DeviceOrientation  } from './DeviceOrientation'
 
 import {
   Header,
@@ -69,9 +74,14 @@ export default class App extends Component {
         <>
           <StatusBar barStyle="dark-content" />
           <View style={styles.sectionContainer}>
+
             {/*<Button title='Get Photos' onPress={() => getAlbum()}>Get Photos</Button>*/}
-            {/*<GetPhoto/>*/}
-            <GetAlbum/>
+            {/*<CurrentAppState/>*/}
+            {/*<Clipboard/>*/}
+            <Layout/>
+            {/*<DeviceOrientation/>*/}
+            {/*<BackHandler/>*/}
+            {/*<GetAlbum/>*/}
           </View>
         </>
     );
