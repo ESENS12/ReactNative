@@ -102,6 +102,8 @@ async function getBlogResVol2(searchQuery, page){
 
       console.log("=========================================");
       console.log("blogUrl : " + blogUrl);
+
+
       const response = await fetch(blogUrl);
       const htmlString = await response.text();
       const $ = cheerio.load(htmlString);
@@ -114,7 +116,7 @@ async function getBlogResVol2(searchQuery, page){
       // console.log('$() _img _inl fx  : ' + $("_img._inl.fx").length);
 
       let $linkData;
-      if($(".post_ct img").length > 0){
+      if($(".post_ct img").length > $("._img").length){
         $linkData = $(".post_ct img");
       }else{
         $linkData = $("._img");
@@ -130,8 +132,10 @@ async function getBlogResVol2(searchQuery, page){
         }else{
           atagData = elem.attribs.src;
         }
-        //지도나, 스티커는 PASS
-        if(elem.attribs.class === "se-sticker-image" || elem.attribs.class === 'se-map-image'){
+
+        //지도나, 스티커, 프로필은 PASS
+        if(elem.attribs.class === "se-sticker-image" || elem.attribs.class === 'se-map-image'
+        || elem.attribs.alt === "프로필"){
           // console.log("this is map or stricker :" + atagData);
           return true
         }
@@ -288,7 +292,7 @@ const Item = (props) => {
       <ScrollView horizontal={true}
                   {...props._panResponder.panHandlers}
                   onScrollEndDrag={() => props.fScroll.setNativeProps({ scrollEnabled: true })} >
-        { props.imgList.map(item => <Image style={{width: 350, height: 260}} source={{uri:item}} />) }
+        { props.imgList.map((item,index) => <Image key={index} style={{width: 350, height: 260}} source={{uri:item}} />) }
       </ScrollView>
         {/*<CarouselCardView key={props.url} imgList={props.imgList} title={props.title} />*/}
         {/*<Text>{props.lead}</Text>*/}
@@ -297,21 +301,6 @@ const Item = (props) => {
 };
 
 export default class App extends React.Component {
-
-
-  componentWillMount(){
-    this._panResponder = PanResponder.create({
-      onMoveShouldSetResponderCapture: () => true,
-      onMoveShouldSetPanResponderCapture: (evt,gestureState) => {
-        return Math.abs(gestureState.dy) > 2 ;
-      },
-      onPanResponderGrant: (e, gestureState) => {
-        this.fScroll.setNativeProps({ scrollEnabled: false })
-      },
-      onPanResponderMove: () => { },
-      onPanResponderTerminationRequest: () => true,
-    })
-  }
 
   constructor(props) {
     super(props);
@@ -357,6 +346,17 @@ export default class App extends React.Component {
 
   componentDidMount(){
     this.getNextPage();
+    this._panResponder = PanResponder.create({
+      onMoveShouldSetResponderCapture: () => true,
+      onMoveShouldSetPanResponderCapture: (evt,gestureState) => {
+        return Math.abs(gestureState.dy) > 2 ;
+      },
+      onPanResponderGrant: (e, gestureState) => {
+        this.fScroll.setNativeProps({ scrollEnabled: false })
+      },
+      onPanResponderMove: () => { },
+      onPanResponderTerminationRequest: () => true,
+    })
   }
 
   render(){
@@ -375,7 +375,7 @@ export default class App extends React.Component {
           <Button title="Search it!" onPress={ ()=> this._searchIt()} />
 
           <ScrollView ref={(e) => { this.fScroll = e }} >
-            { this.state.items.map(item=> <Item fScroll = {this.fScroll} _panResponder = {this._panResponder} {...item} />) }
+            { this.state.items.map(item=> <Item key = {item.imgList[0]} fScroll = {this.fScroll} _panResponder = {this._panResponder} {...item} />) }
           </ScrollView>
           {/*<TouchableOpacity>*/}
           <Button title="SearchMore" onPress={ ()=> this.getNextPage()}/>
