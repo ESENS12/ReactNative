@@ -14,6 +14,8 @@ import {
   StatusBar,
   Button,
   PanResponder,
+    Modal,
+    ActivityIndicator,
 } from 'react-native';
 
 import {
@@ -124,6 +126,11 @@ async function getBlogResVol2(searchQuery, page){
 
       let fakeNum = 0;
 
+
+
+        //response 200 check
+        // const response = await fetch(blogUrl);
+
       $linkData.each(function (i, elem) {
 
         let atagData;
@@ -141,7 +148,7 @@ async function getBlogResVol2(searchQuery, page){
         }
 
         if(atagData != null){
-
+            // console.log("atagData : ", atagData);
           imgList[i] = atagData.substring(0,atagData.lastIndexOf("?") + 1) + "type=w800";
 
         }else{
@@ -285,13 +292,14 @@ const Item = (props) => {
   }
 
   return (
-    <View>
+    <View style={{ backgroundColor: 'transparent' }}>
         {/*<Text style={styles.listItemText}> {props.index} </Text>*/}
         <Text style={styles.listItemText}> {props.title} </Text>
         <Text style={styles.listItemURL}> {props.url} </Text>
-      <ScrollView horizontal={true}
-                  {...props._panResponder.panHandlers}
-                  onScrollEndDrag={() => props.fScroll.setNativeProps({ scrollEnabled: true })} >
+      <ScrollView
+            horizontal={true}
+            {...props._panResponder.panHandlers}
+            onScrollEndDrag={() => props.fScroll.setNativeProps({ scrollEnabled: true })} >
         { props.imgList.map((item,index) => <Image key={index} style={{width: 350, height: 260}} source={{uri:item}} />) }
       </ScrollView>
         {/*<CarouselCardView key={props.url} imgList={props.imgList} title={props.title} />*/}
@@ -306,12 +314,18 @@ export default class App extends React.Component {
     super(props);
 
     this.state = {
+      isProgress: false,
       page : 1 ,
       items : [],
       searchQuery : "서울대 맛집",
       itemIndex : 1,
     };
   }
+
+
+  openProgressbar = (b_isOpen) => {
+    this.setState({ isProgress: b_isOpen })
+  };
 
   _searchIt(){
     const items = this.state.items;
@@ -333,6 +347,8 @@ export default class App extends React.Component {
     const page = this.state.page+10;
     // const items = await getSportsNews(page);
     // const getItemRes  = await getBlogRes(this.state.searchQuery,this.state.page);
+    this.openProgressbar(true);
+
     const getItemRes  = await getBlogResVol2(this.state.searchQuery,this.state.page);
 
     this.setState( state => {
@@ -340,6 +356,7 @@ export default class App extends React.Component {
       // return {items : getItemRes, page};
     }, callback =>{
       // console.log("item size : " + this.state.items.length);
+      this.openProgressbar(false);
     });
 
   }
@@ -347,12 +364,15 @@ export default class App extends React.Component {
   componentDidMount(){
     this.getNextPage();
     this._panResponder = PanResponder.create({
+
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: (evt,gestureState) => {
+          console.log('onMoveShouldSetPanResponderCapture');
         return Math.abs(gestureState.dy) > 2 ;
       },
       onPanResponderGrant: (e, gestureState) => {
-        this.fScroll.setNativeProps({ scrollEnabled: false })
+          console.log('onPanResponderGrant! ');
+        this.fScroll.setNativeProps({ scrollEnabled: true })
       },
       onPanResponderMove: () => { },
       onPanResponderTerminationRequest: () => true,
@@ -361,6 +381,9 @@ export default class App extends React.Component {
 
   render(){
     return(
+        this.state.isProgress ?
+            <CustomProgressBar />
+            :
         <View style={styles.container}>
           <StatusBar barStyle="dark-content" />
           <View style={styles.searchQueryParent}>
@@ -375,15 +398,28 @@ export default class App extends React.Component {
           <Button title="Search it!" onPress={ ()=> this._searchIt()} />
 
           <ScrollView ref={(e) => { this.fScroll = e }} >
-            { this.state.items.map(item=> <Item key = {item.imgList[0]} fScroll = {this.fScroll} _panResponder = {this._panResponder} {...item} />) }
+            { this.state.items.map(item=> <Item key = {item.imgList[0]}  fScroll = {this.fScroll} _panResponder = {this._panResponder} {...item} />) }
           </ScrollView>
           {/*<TouchableOpacity>*/}
           <Button title="SearchMore" onPress={ ()=> this.getNextPage()}/>
           {/*</TouchableOpacity>*/}
           <Text style={styles.footer}>Crolling With Cheerio!</Text>
+
         </View>
     )}
 };
+
+
+const CustomProgressBar = ({ visible }) => (
+    <Modal onRequestClose={() => null} visible={visible}>
+        <View style={{ flex: 1, backgroundColor: '#dcdcdc', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ borderRadius: 10, backgroundColor: 'white', padding: 25 }}>
+                <Text style={{ fontSize: 20, fontWeight: '200' }}>Loading</Text>
+                <ActivityIndicator size="large" />
+            </View>
+        </View>
+    </Modal>
+);
 
 
 const styles = StyleSheet.create({
