@@ -13,6 +13,7 @@ import {
   Text,
   StatusBar,
   Button,
+  PanResponder,
 } from 'react-native';
 
 import {
@@ -22,8 +23,9 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import {arrowFunctionExpression} from '@babel/types';
 
+import {arrowFunctionExpression} from '@babel/types';
+import {CarouselCardView} from './Component/CarouselCardView';
 const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
 
 /*
@@ -49,6 +51,136 @@ const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog
 //어메이징블로그
 //파블로체험단
 //디너의 여왕 -> https://dinnerqueen.net/
+
+
+async function getBlogResVol2(searchQuery, page){
+
+  let ulList = [];
+  const searchUrl = `https://search.naver.com/search.naver?query=${searchQuery}&sm=tab_pge&srchby=all&st=sim&where=post&start=${page}`;
+  const response = await fetch(searchUrl);
+  const htmlString = await response.text();
+  const $ = cheerio.load(htmlString);
+  // console.log("search Url : "  + searchUrl);
+  const $bodyList = $("li.sh_blog_top");
+
+  // console.log("result items : "+$bodyList.length);
+  $bodyList.each(function(i, elem) {
+
+    ulList[i] = {
+      title: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('title'),
+      isFake : false,
+      // index : itemIndex,
+      // title: $(this).find('strong[name=news-tl]').text(),
+      url: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('href'),
+      // image_url: $(this).find('p.poto a img').attr('src'),
+      // date: $(this).find('span.p-time').text(),
+      // lead : $(this).find('p.lead').text()
+    };
+    // console.log("index : " + i + ", title : " + ulList[i].title);
+  });
+  // console.log("===================================");
+
+
+
+  for (let i = 0; i < ulList.length; i++) {
+    let imgList = [];
+    const url = ulList[i].url;
+    let blogUrl = "";
+    let b_isFake = false;
+
+    try{
+
+      if (url.includes("blog.me")) {
+        let nickName = url.substring(url.indexOf("/") + 2, url.indexOf("."));
+        let postNumber = url.substring(url.lastIndexOf("/") + 1);
+        // https://m.blog.naver.com/conanronse?Redirect=Log&logNo=221607525803
+        blogUrl = "https://m.blog.naver.com/" + nickName + "?Redirect=Log&logNo=" + postNumber;
+      } else {
+        //todo 블로그 주소 잘못 치환 되는경우 있음
+        blogUrl = ulList[i].url.replace("https://", "https://m.");
+      }
+
+      console.log("=========================================");
+      console.log("blogUrl : " + blogUrl);
+      const response = await fetch(blogUrl);
+      const htmlString = await response.text();
+      const $ = cheerio.load(htmlString);
+
+      console.log('$() se-post_ct : ' + $(".post_ct").length);
+      console.log('$() .post_ct img  : ' + $(".post_ct img").length);
+      console.log('$()._img  : ' + $("._img").length);
+
+      // console.log('$() ._img  : ' + $("._img").length);
+      // console.log('$() _img _inl fx  : ' + $("_img._inl.fx").length);
+
+      let $linkData;
+      if($(".post_ct img").length > 0){
+        $linkData = $(".post_ct img");
+      }else{
+        $linkData = $("._img");
+      }
+
+      let fakeNum = 0;
+
+      $linkData.each(function (i, elem) {
+
+        let atagData;
+        if(elem.attribs.src == null) {
+          atagData = elem.attribs.thumburl;
+        }else{
+          atagData = elem.attribs.src;
+        }
+        //지도나, 스티커는 PASS
+        if(elem.attribs.class === "se-sticker-image" || elem.attribs.class === 'se-map-image'){
+          // console.log("this is map or stricker :" + atagData);
+          return true
+        }
+
+        if(atagData != null){
+
+          imgList[i] = atagData.substring(0,atagData.lastIndexOf("?") + 1) + "type=w800";
+
+        }else{
+
+          console.log('atagData null');
+          return true;
+        }
+
+        for (let j = 0; j < fakeBlogKeywordList.length; j++) {
+          let fake = fakeBlogKeywordList[j];
+
+          if (atagData.includes(fake)) {
+            console.log("this is Fake post :  " + atagData);
+            console.log("from : " + fake);
+            b_isFake = true;
+          }
+
+        }
+      });
+
+      ulList[i].isFake = b_isFake;
+      ulList[i].imgList = imgList;
+
+      if (!b_isFake) {
+        console.log("not fake : " + ulList[i].url);
+      }
+
+      // console.log("=======================================", i);
+      // console.log("index : ", i , ", img : " ,ulList[i].imgList[0])
+      // ulList[i].imgList.index = i;
+
+      // console.log("not Fake Image TagNum : " + fakeNum );
+      console.log("ulList[i].isFake : " + ulList[i].isFake );
+      console.log("ulList[i].imgList : " + ulList[i].imgList.length );
+
+    }catch (e) {
+      console.log("## Exception : " + e.toString());
+    }
+
+  }
+  return ulList;
+}
+
 
 async function getBlogRes(searchQuery, page){
 
@@ -149,16 +281,37 @@ const Item = (props) => {
   }
 
   return (
-    <TouchableOpacity style={styles.listItemParent}>
+    <View>
         {/*<Text style={styles.listItemText}> {props.index} </Text>*/}
         <Text style={styles.listItemText}> {props.title} </Text>
         <Text style={styles.listItemURL}> {props.url} </Text>
+      <ScrollView horizontal={true}
+                  {...props._panResponder.panHandlers}
+                  onScrollEndDrag={() => props.fScroll.setNativeProps({ scrollEnabled: true })} >
+        { props.imgList.map(item => <Image style={{width: 350, height: 260}} source={{uri:item}} />) }
+      </ScrollView>
+        {/*<CarouselCardView key={props.url} imgList={props.imgList} title={props.title} />*/}
         {/*<Text>{props.lead}</Text>*/}
-    </TouchableOpacity>
+    </View>
   )
 };
 
 export default class App extends React.Component {
+
+
+  componentWillMount(){
+    this._panResponder = PanResponder.create({
+      onMoveShouldSetResponderCapture: () => true,
+      onMoveShouldSetPanResponderCapture: (evt,gestureState) => {
+        return Math.abs(gestureState.dy) > 2 ;
+      },
+      onPanResponderGrant: (e, gestureState) => {
+        this.fScroll.setNativeProps({ scrollEnabled: false })
+      },
+      onPanResponderMove: () => { },
+      onPanResponderTerminationRequest: () => true,
+    })
+  }
 
   constructor(props) {
     super(props);
@@ -166,7 +319,7 @@ export default class App extends React.Component {
     this.state = {
       page : 1 ,
       items : [],
-      searchQuery : "서울대입구역 하남돼지집",
+      searchQuery : "서울대 맛집",
       itemIndex : 1,
     };
   }
@@ -190,7 +343,8 @@ export default class App extends React.Component {
 
     const page = this.state.page+10;
     // const items = await getSportsNews(page);
-    const getItemRes  = await getBlogRes(this.state.searchQuery,this.state.page);
+    // const getItemRes  = await getBlogRes(this.state.searchQuery,this.state.page);
+    const getItemRes  = await getBlogResVol2(this.state.searchQuery,this.state.page);
 
     this.setState( state => {
       return {items : this.state.items.concat(getItemRes), page};
@@ -220,8 +374,8 @@ export default class App extends React.Component {
           </View>
           <Button title="Search it!" onPress={ ()=> this._searchIt()} />
 
-          <ScrollView>
-            { this.state.items.map(item=> <Item {...item} />) }
+          <ScrollView ref={(e) => { this.fScroll = e }} >
+            { this.state.items.map(item=> <Item fScroll = {this.fScroll} _panResponder = {this._panResponder} {...item} />) }
           </ScrollView>
           {/*<TouchableOpacity>*/}
           <Button title="SearchMore" onPress={ ()=> this.getNextPage()}/>
