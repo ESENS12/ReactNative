@@ -28,6 +28,7 @@ import {
 
 import {arrowFunctionExpression} from '@babel/types';
 import {CarouselCardView} from './Component/CarouselCardView';
+import {MyScrollView} from './Component/MyScrollView';
 const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
 
 /*
@@ -82,8 +83,6 @@ async function getBlogResVol2(searchQuery, page){
   });
   // console.log("===================================");
 
-
-
   for (let i = 0; i < ulList.length; i++) {
     let imgList = [];
     const url = ulList[i].url;
@@ -110,9 +109,9 @@ async function getBlogResVol2(searchQuery, page){
       const htmlString = await response.text();
       const $ = cheerio.load(htmlString);
 
-      console.log('$() se-post_ct : ' + $(".post_ct").length);
-      console.log('$() .post_ct img  : ' + $(".post_ct img").length);
-      console.log('$()._img  : ' + $("._img").length);
+      // console.log('$() se-post_ct : ' + $(".post_ct").length);
+      // console.log('$() .post_ct img  : ' + $(".post_ct img").length);
+      // console.log('$()._img  : ' + $("._img").length);
 
       // console.log('$() ._img  : ' + $("._img").length);
       // console.log('$() _img _inl fx  : ' + $("_img._inl.fx").length);
@@ -125,8 +124,6 @@ async function getBlogResVol2(searchQuery, page){
       }
 
       let fakeNum = 0;
-
-
 
         //response 200 check
         // const response = await fetch(blogUrl);
@@ -173,7 +170,7 @@ async function getBlogResVol2(searchQuery, page){
       ulList[i].imgList = imgList;
 
       if (!b_isFake) {
-        console.log("not fake : " + ulList[i].url);
+        console.log("not fake");
       }
 
       // console.log("=======================================", i);
@@ -181,8 +178,8 @@ async function getBlogResVol2(searchQuery, page){
       // ulList[i].imgList.index = i;
 
       // console.log("not Fake Image TagNum : " + fakeNum );
-      console.log("ulList[i].isFake : " + ulList[i].isFake );
-      console.log("ulList[i].imgList : " + ulList[i].imgList.length );
+      // console.log("ulList[i].isFake : " + ulList[i].isFake );
+      console.log("imgList length : " + ulList[i].imgList.length );
 
     }catch (e) {
       console.log("## Exception : " + e.toString());
@@ -292,11 +289,13 @@ const Item = (props) => {
   }
 
   return (
-    <View style={{ backgroundColor: 'transparent' }}>
+    <View style={styles.listItemParent}>
         {/*<Text style={styles.listItemText}> {props.index} </Text>*/}
         <Text style={styles.listItemText}> {props.title} </Text>
         <Text style={styles.listItemURL}> {props.url} </Text>
       <ScrollView
+            showsHorizontalScrollIndicator = {true}
+            indicatorStyle={'white'}
             horizontal={true}
             {...props._panResponder.panHandlers}
             onScrollEndDrag={() => props.fScroll.setNativeProps({ scrollEnabled: true })} >
@@ -367,11 +366,11 @@ export default class App extends React.Component {
 
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: (evt,gestureState) => {
-          console.log('onMoveShouldSetPanResponderCapture');
+          // console.log('onMoveShouldSetPanResponderCapture');
         return Math.abs(gestureState.dy) > 2 ;
       },
       onPanResponderGrant: (e, gestureState) => {
-          console.log('onPanResponderGrant! ');
+          // console.log('onPanResponderGrant! ');
         this.fScroll.setNativeProps({ scrollEnabled: true })
       },
       onPanResponderMove: () => { },
@@ -381,39 +380,39 @@ export default class App extends React.Component {
 
   render(){
     return(
-        this.state.isProgress ?
-            <CustomProgressBar />
-            :
-        <View style={styles.container}>
-          <StatusBar barStyle="dark-content" />
-          <View style={styles.searchQueryParent}>
-            <Text style={styles.searchQueryDescription}>Search Query : </Text>
-            <TextInput
-                style={styles.searchQueryTextInput}
-                placeholder="SearchQuery"
-                onChangeText={(searchQuery) => this.setState({searchQuery : searchQuery})}
-                value={this.state.searchQuery}
-            />
-          </View>
-          <Button title="Search it!" onPress={ ()=> this._searchIt()} />
 
-          <ScrollView ref={(e) => { this.fScroll = e }} >
-            { this.state.items.map(item=> <Item key = {item.imgList[0]}  fScroll = {this.fScroll} _panResponder = {this._panResponder} {...item} />) }
-          </ScrollView>
-          {/*<TouchableOpacity>*/}
-          <Button title="SearchMore" onPress={ ()=> this.getNextPage()}/>
-          {/*</TouchableOpacity>*/}
-          <Text style={styles.footer}>Crolling With Cheerio!</Text>
+        <SafeAreaView style={styles.container}>
 
-        </View>
+          {this.state.isProgress && <CustomProgressBar/> }
+
+            {/*<StatusBar barStyle="dark-content" />*/}
+            <View style={styles.searchQueryParent}>
+              <Text style={styles.searchQueryDescription}>검색어</Text>
+              <TextInput
+                  style={styles.searchQueryTextInput}
+                  placeholder="SearchQuery"
+                  onChangeText={(searchQuery) => this.setState({searchQuery : searchQuery})}
+                  value={this.state.searchQuery}
+              />
+            </View>
+            <Button title="Search it!" onPress={ ()=> this._searchIt()} />
+
+            <ScrollView ref={(e) => { this.fScroll = e }} >
+              { this.state.items.map(item => <Item key = {item.imgList[0]} fScroll = {this.fScroll} _panResponder = {this._panResponder} onPress={ ()=> this.onclick(item)} {...item} />) }
+            </ScrollView>
+            {/*<TouchableOpacity>*/}
+            <Button title="SearchMore" onPress={ ()=> this.getNextPage()}/>
+            {/*</TouchableOpacity>*/}
+            <Text style={styles.footer}>Crawling Without ANNOYING Advertise</Text>
+          </SafeAreaView>
     )}
 };
 
 
 const CustomProgressBar = ({ visible }) => (
-    <Modal onRequestClose={() => null} visible={visible}>
-        <View style={{ flex: 1, backgroundColor: '#dcdcdc', alignItems: 'center', justifyContent: 'center' }}>
-            <View style={{ borderRadius: 10, backgroundColor: 'white', padding: 25 }}>
+    <Modal transparent={true} onRequestClose={() => null} visible={visible}>
+        <View style={styles.progressModal}>
+            <View style={{ borderRadius: 10, backgroundColor: 'white' ,padding: 25 }}>
                 <Text style={{ fontSize: 20, fontWeight: '200' }}>Loading</Text>
                 <ActivityIndicator size="large" />
             </View>
@@ -424,13 +423,28 @@ const CustomProgressBar = ({ visible }) => (
 
 const styles = StyleSheet.create({
 
-
+// { flex: 1, backgroundColor: '#dcdcdc', alignItems: 'center', justifyContent: 'center' }
   /**
    *    search query layout
    *
    * */
+
+  progressModal:{
+    position: 'absolute',
+    alignItems: 'center',
+    zIndex : 1 ,
+    flex: 1,
+    left : 0,
+    top : 0,
+    bottom: 0,
+    right: 0,
+    justifyContent : 'center',
+    alignSelf: 'stretch',
+    backgroundColor : 'transparent',
+
+  },
+
   searchQueryParent:{
-    marginTop : 45,
     flexDirection : 'row',
     backgroundColor: Colors.primary,
   },
@@ -451,6 +465,8 @@ const styles = StyleSheet.create({
     marginLeft : 10,
     fontSize: 18,
     fontWeight: '400',
+    textAlign :'center',
+    textAlignVertical: 'center',
     color: Colors.white,
   },
 
@@ -461,9 +477,10 @@ const styles = StyleSheet.create({
    * **/
 
   listItemParent:{
-    margin : 10,
-    backgroundColor: Colors.light,
-    flexDirection: 'column'
+    borderRadius:10,
+    borderWidth: 1,
+    borderColor: '#fff',
+    backgroundColor: 'transparent',
   },
 
   listItemText:{
