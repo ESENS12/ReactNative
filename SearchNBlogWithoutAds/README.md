@@ -5,6 +5,7 @@
 # References
 - Crawling Sample (https://github.com/ESENS12/ReactNative/tree/master/CrawlingSample)
 - SnapCarousel in list Sample (https://github.com/ESENS12/ReactNative/tree/master/CardViewIntoListview)
+- Progress Dialog Sample (https://github.com/ESENS12/ReactNative/tree/master/ProgressDialogSample)
 
 # Components
 - npm i cheerio-without-node-native@0.20.2
