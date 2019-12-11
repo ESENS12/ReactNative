@@ -29,6 +29,7 @@ import {
 import {arrowFunctionExpression} from '@babel/types';
 import {CarouselCardView} from './Component/CarouselCardView';
 import {MyScrollView} from './Component/MyScrollView';
+import {BackHandler} from './Component/BackHandler';
 const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
 
 /*
@@ -404,6 +405,7 @@ export default class App extends React.Component {
             <Button title="SearchMore" onPress={ ()=> this.getNextPage()}/>
             {/*</TouchableOpacity>*/}
             <Text style={styles.footer}>Crawling Without ANNOYING Advertise</Text>
+          <BackHandler id = {"test"}/>
           </SafeAreaView>
     )}
 };
