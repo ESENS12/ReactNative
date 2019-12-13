@@ -26,6 +26,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import SearchBar from 'react-native-search-bar';
 
 import {BackHandler} from './Component/BackHandler';
 const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
@@ -197,15 +198,22 @@ const Item = (props) => {
   return (
     <View style={styles.listItemParent}>
         {/*<Text style={styles.listItemText}> {props.index} </Text>*/}
-        <Text style={styles.listItemText}> {props.title} </Text>
-        <Text style={styles.listItemURL}> {props.url} </Text>
+        <TouchableOpacity  onPress ={props.onPress} >
+          <Text style={styles.listItemText}> {props.title} </Text>
+          <Text style={styles.listItemURL}> {props.url} </Text>
+        </TouchableOpacity>
+
       <ScrollView
             showsHorizontalScrollIndicator = {true}
             indicatorStyle={'white'}
             horizontal={true}
             {...props._panResponder.panHandlers}
             onScrollEndDrag={() => props.fScroll.setNativeProps({ scrollEnabled: true })} >
-        { props.imgList.map((item,index) => <Image key={index} style={{width: 350, height: 260}} source={{uri:item}} />) }
+        { props.imgList.map((item,index) =>
+
+            <Image key={index} style={{width: 350, height: 260}} source={{uri:item}} />
+
+            ) }
       </ScrollView>
         {/*<CarouselCardView key={props.url} imgList={props.imgList} title={props.title} />*/}
         {/*<Text>{props.lead}</Text>*/}
@@ -216,9 +224,26 @@ const Item = (props) => {
 export class MainPage extends React.Component {
 
   static navigationOptions = {
-    title: 'Home',
+    title : "Home",
     headerBackTitle: 'Back',
     gesturesEnabled : false, //for iOS swipe
+    headerStyle: {
+      backgroundColor: '#03d05e',
+    },
+    headerTitleStyle: {
+      fontWeight: 'bold',
+      color:'white',
+      fontSize: 20
+    },
+
+    // headerRight: () => (
+    //     <Button
+    //         onPress={() => alert('This is a button!')}
+    //         title="Info"
+    //         color="#fff"
+    //     />
+    // ),
+
   };
 
 
@@ -275,6 +300,7 @@ export class MainPage extends React.Component {
 
   componentDidMount(){
     this.getNextPage();
+    // this.refs.searchBar.focus();
     this._panResponder = PanResponder.create({
 
       onMoveShouldSetResponderCapture: () => true,
@@ -291,26 +317,43 @@ export class MainPage extends React.Component {
     })
   }
 
-  render(){
+  onclick(item){
     const { navigate } = this.props.navigation;
     const webview = 'MyWebview';
+    console.log('onclick! ' + item.url);
+    navigate(webview,{uri : item.url});
+  }
+
+  render(){
+    // const { navigate } = this.props.navigation;
+    // const webview = 'MyWebview';
     return(
 
         <SafeAreaView style={styles.container}>
-          <Button title={'gotoWebviewTest'} onPress={ ()=>  navigate(webview,{uri : 'https://m.naver.com'})}/>
+          {/*<Button title={'gotoWebviewTest'} onPress={ ()=>  navigate(webview,{uri : 'https://m.naver.com'})}/>*/}
           {this.state.isProgress && <CustomProgressBar/> }
 
             {/*<StatusBar barStyle="dark-content" />*/}
             <View style={styles.searchQueryParent}>
-              <Text style={styles.searchQueryDescription}>검색어</Text>
-              <TextInput
-                  style={styles.searchQueryTextInput}
-                  placeholder="SearchQuery"
+
+              <SearchBar style={styles.searchBar}
+                  ref="searchBar"
+                  placeholder="Search"
+                  hideBackground={true}
                   onChangeText={(searchQuery) => this.setState({searchQuery : searchQuery})}
-                  value={this.state.searchQuery}
+                  onSearchButtonPress={()=> this._searchIt()}
+                  onCancelButtonPress={() => this.setState({searchQuery : ""})}
               />
+
+              {/*<Text style={styles.searchQueryDescription}>검색어</Text>*/}
+              {/*<TextInput*/}
+                  {/*style={styles.searchQueryTextInput}*/}
+                  {/*placeholder="SearchQuery"*/}
+                  {/*onChangeText={(searchQuery) => this.setState({searchQuery : searchQuery})}*/}
+                  {/*value={this.state.searchQuery}*/}
+              {/*/>*/}
             </View>
-            <Button title="Search it!" onPress={ ()=> this._searchIt()} />
+            {/*<Button title="Search it!" onPress={ ()=> this._searchIt()} />*/}
 
             <ScrollView ref={(e) => { this.fScroll = e }} >
               { this.state.items.map(item => <Item key = {item.imgList[0]} fScroll = {this.fScroll} _panResponder = {this._panResponder} onPress={ ()=> this.onclick(item)} {...item} />) }
@@ -320,6 +363,7 @@ export class MainPage extends React.Component {
             {/*</TouchableOpacity>*/}
             <Text style={styles.footer}>Crawling Without ANNOYING Advertise</Text>
           <BackHandler/>
+
           </SafeAreaView>
     )}
 }
@@ -340,10 +384,7 @@ const CustomProgressBar = ({ visible }) => (
 const styles = StyleSheet.create({
 
 // { flex: 1, backgroundColor: '#dcdcdc', alignItems: 'center', justifyContent: 'center' }
-  /**
-   *    search query layout
-   *
-   * */
+
 
   progressModal:{
     position: 'absolute',
@@ -360,9 +401,17 @@ const styles = StyleSheet.create({
 
   },
 
+  /**
+   *    search query layout
+   *
+   * */
+
   searchQueryParent:{
-    flexDirection : 'row',
-    backgroundColor: Colors.primary,
+    height:45,
+    alignSelf:'stretch',
+    backgroundColor:'#03d05e',
+    // flex : 1,
+    // backgroundColor: Colors.primary,
   },
 
   //검색어 editText
@@ -386,6 +435,13 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
 
+  //검색바
+  searchBar: {
+    height:30,
+    alignSelf: 'stretch',
+    // backgroundColor:'#03d05e',
+    textAlignVertical: 'center',
+  },
   /**
    *
    * listitem layout
