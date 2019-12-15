@@ -356,7 +356,7 @@ export class MainPage extends React.Component {
             {/*<Button title="Search it!" onPress={ ()=> this._searchIt()} />*/}
 
             <ScrollView ref={(e) => { this.fScroll = e }} >
-              { this.state.items.map(item => <Item key = {item.imgList[0]} fScroll = {this.fScroll} _panResponder = {this._panResponder} onPress={ ()=> this.onclick(item)} {...item} />) }
+              { this.state.items.map((item,index) => <Item key = {index} fScroll = {this.fScroll} _panResponder = {this._panResponder} onPress={ () => this.onclick(item)} {...item} />) }
             </ScrollView>
             {/*<TouchableOpacity>*/}
             <Button title="SearchMore" onPress={ ()=> this.getNextPage()}/>
