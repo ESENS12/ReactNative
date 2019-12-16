@@ -1,114 +1,118 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 
-import React from 'react';
+import React, {Component} from 'react';
 import {
-  SafeAreaView,
+  AppRegistry,
   StyleSheet,
-  ScrollView,
-  View,
   Text,
+  View,
+  TouchableOpacity,
+  Animated,
   StatusBar,
+  SafeAreaView,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+let isHidden = true;
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
+export default class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      bounceValue: new Animated.Value(200),  //This is the initial position of the subview
+      buttonText: "Up Subview"
+    };
+  }
+
+  _toggleSubview() {
+    console.log('_toggleSubview()');
+    this.setState({
+      buttonText: !isHidden ? "Up Subview" : "Down Subview"
+    });
+
+    let toValue = 200;
+
+    if(isHidden) {
+      toValue = 150;
+    }
+
+    Animated.spring(
+        this.state.bounceValue,
+        {
+          toValue: toValue,
+          velocity: 3,
+          tension: 2,
+          friction: 8,
+        }
+    ).start(()=>{console.log("animEnd")});
+
+    isHidden = !isHidden;
+  }
+
+
+  render(){
+    return (
+      <>
+        <StatusBar barStyle="dark-content" />
+        <SafeAreaView>
+          <View style={styles.container}>
+            <TouchableOpacity style={styles.button} onPress={ ()=> this._toggleSubview()} >
+              <Text style={styles.buttonText}>{this.state.buttonText}</Text>
+            </TouchableOpacity>
+            <Animated.View
+                style={[styles.subView,
+                  {transform: [{translateY: this.state.bounceValue}]}]}
+            >
+              <Text style={styles.BottomViewText}>This is a sub view</Text>
+            </Animated.View>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+        </SafeAreaView>
+      </>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+    marginTop:100,
   },
-  engine: {
-    position: 'absolute',
+  button: {
+    height:100,
+    padding: 8,
+  },
+  buttonText: {
+    fontSize: 17,
+    color: "#007AFF"
+  },
+  BottomViewText: {
+    fontSize: 17,
+    color:"#fff",
+    textAlign:"center",
+    backgroundColor:"#000"
+  },
+  searchBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
     right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+    backgroundColor: "#FFFFFF",
+    height: 100,
+    alignSelf: 'stretch',
 
-export default App;
+    // backgroundColor:'#03d05e',
+    textAlignVertical: 'center',
+  },
+  subView: {
+    flex:1,
+    alignSelf:'flex-end',
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#FFFFFF",
+    height: 100,
+  }
+});
