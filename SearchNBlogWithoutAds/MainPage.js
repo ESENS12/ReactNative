@@ -29,6 +29,8 @@ import {
 import SearchBar from 'react-native-search-bar';
 
 import {BackHandler} from './Component/BackHandler';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
 
 /*
@@ -222,11 +224,14 @@ const Item = (props) => {
             horizontal={true}
             borderWidth={1}
             borderRadius={15}
+            decelerationRate={0}
+            snapToInterval={360}
+            snapToAlignment={"center"}
             {...props._panResponder.panHandlers}
             onScrollEndDrag={() => props.fScroll.setNativeProps({ scrollEnabled: true })} >
         { props.imgList.map((item,index) =>
 
-            <Image key={index} style={{width: 350, height: 260}} source={{uri:item}} />
+            <Image key={index} style={{width: 360, height: 260}} source={{uri:item}} />
 
             ) }
       </ScrollView>
@@ -269,6 +274,7 @@ export class MainPage extends React.Component {
       isProgress: false,
       page : 1 ,
       items : [],
+      isScrollEnd: false,
       searchQuery : "서울대입구역 맛집",
       itemIndex : 1,
     };
@@ -345,10 +351,8 @@ export class MainPage extends React.Component {
     return(
 
         <SafeAreaView style={styles.container}>
-          {/*<Button title={'gotoWebviewTest'} onPress={ ()=>  navigate(webview,{uri : 'https://m.naver.com'})}/>*/}
           {this.state.isProgress && <CustomProgressBar/> }
 
-            {/*<StatusBar barStyle="dark-content" />*/}
             <View style={styles.searchQueryParent}>
 
               <SearchBar style={styles.searchBar}
@@ -360,31 +364,35 @@ export class MainPage extends React.Component {
                   onCancelButtonPress={() => this.setState({searchQuery : ""})}
               />
 
-              {/*<Text style={styles.searchQueryDescription}>검색어</Text>*/}
-              {/*<TextInput*/}
-                  {/*style={styles.searchQueryTextInput}*/}
-                  {/*placeholder="SearchQuery"*/}
-                  {/*onChangeText={(searchQuery) => this.setState({searchQuery : searchQuery})}*/}
-                  {/*value={this.state.searchQuery}*/}
-              {/*/>*/}
             </View>
-            {/*<Button title="Search it!" onPress={ ()=> this._searchIt()} />*/}
 
-            <ScrollView ref={(e) => { this.fScroll = e }} >
+            <ScrollView ref={(e) => { this.fScroll = e }}
+                        onScroll={({nativeEvent}) => {
+                            this.setState({isScrollEnd:isCloseToBottom(nativeEvent)})
+                        }}
+                        scrollEventThrottle={200}
+            >
               { this.state.items.map((item,index) => <Item key = {index} fScroll = {this.fScroll} _panResponder = {this._panResponder} onPress={ () => this.onclick(item)} {...item} />) }
             </ScrollView>
-            {/*<TouchableOpacity>*/}
 
-          {this.state.items.length > 0 && <Button style={styles.searchMore} title="SearchMore" onPress={ ()=> this.getNextPage()}/>}
+          {this.state.items.length > 0 && this.state.isScrollEnd &&
+          <TouchableOpacity style={styles.searchMoreBackground} onPress={ ()=> this.getNextPage()}>
+            <Icon name="ios-arrow-down" size={25} color={"white"} style={{alignSelf:'center',flex:1}}/>
+          </TouchableOpacity> }
 
-            {/*</TouchableOpacity>*/}
-            <Text style={styles.footer}>Crawling Without ANNOYING Advertise</Text>
+            {/*<Text style={styles.footer}>Crawling Without ANNOYING Advertise</Text>*/}
           <BackHandler/>
 
           </SafeAreaView>
     )}
 }
 
+
+const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+  const paddingToBottom = 20;
+  return layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+};
 
 const CustomProgressBar = ({ visible }) => (
     <Modal transparent={true} onRequestClose={() => null} visible={visible}>
@@ -472,11 +480,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
 
-  searchMore:{
-    color:'#03d05e',
-    borderRadius:15,
-    borderWidth: 10,
+  searchMoreBackground:{
+    backgroundColor:'#03d05e',
+    borderRadius:3,
+    borderWidth: 0.01,
+    height : 35,
     // borderColor: '#fff',
+  },
+
+  searchMoreText:{
+    fontSize:20,
+    textAlignVertical:'center',
+    textAlign:'center',
+    alignSelf:'center',
+    color:'#fff',
+    flex:1,
   },
 
   listItemText:{
@@ -484,10 +502,6 @@ const styles = StyleSheet.create({
     fontSize : 20,
     color : Colors.black,
     marginBottom:5,
-    fontFamily: 'NanumGothic',
-    fontWeight: '600',
-    fontStyle: 'normal',
-
   },
 
   listItemDate:{
@@ -496,10 +510,6 @@ const styles = StyleSheet.create({
     alignSelf:'flex-end',
     color : Colors.black,
     marginBottom:5,
-    fontFamily: 'NanumGothic',
-    fontWeight: '600',
-    fontStyle: 'normal',
-
   },
 
   listItemURL:{
@@ -535,6 +545,13 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
+
+  // bold: Platform.OS === 'ios' ? {
+  //   fontFamily: 'NanumGothicBold',
+  //   fontWeight: 'bold'
+  // } : {
+  //   fontFamily: 'NanumGothicBold'
+  // },
 
   footer: {
     color: Colors.dark,
