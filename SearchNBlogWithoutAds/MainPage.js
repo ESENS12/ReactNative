@@ -56,19 +56,32 @@ const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog
 //디너의 여왕 -> https://dinnerqueen.net/
 
 
+
+function RemoveItemList(){
+
+}
+
 async function getBlogResVol2(searchQuery, page){
+  //
+  // console.log("SEARCH QUERY length: " + searchQuery.length);
+  // if(searchQuery == ""){
+  //   RemoveItemList();
+  //   // this.setState({searchQuery : ""});
+  //   return;
+  // }
 
   let ulList = [];
   const searchUrl = `https://search.naver.com/search.naver?query=${searchQuery}&sm=tab_pge&srchby=all&st=sim&where=post&start=${page}`;
   const response = await fetch(searchUrl);
   const htmlString = await response.text();
   const $ = cheerio.load(htmlString);
-  // console.log("search Url : "  + searchUrl);
+  console.log("search Url : "  + searchUrl);
   const $bodyList = $("li.sh_blog_top");
 
   // console.log("result items : "+$bodyList.length);
   $bodyList.each(function(i, elem) {
 
+    //title, date,
     ulList[i] = {
       title: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('title'),
       isFake : false,
@@ -76,10 +89,10 @@ async function getBlogResVol2(searchQuery, page){
       // title: $(this).find('strong[name=news-tl]').text(),
       url: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('href'),
       // image_url: $(this).find('p.poto a img').attr('src'),
-      // date: $(this).find('span.p-time').text(),
+      date: $(this).find('.txt_inline').text(),
       // lead : $(this).find('p.lead').text()
     };
-    // console.log("index : " + i + ", title : " + ulList[i].title);
+    console.log("index : " + i + ", date : " + ulList[i].date);
   });
   // console.log("===================================");
 
@@ -200,13 +213,15 @@ const Item = (props) => {
         {/*<Text style={styles.listItemText}> {props.index} </Text>*/}
         <TouchableOpacity  onPress ={props.onPress} >
           <Text style={styles.listItemText}> {props.title} </Text>
-          <Text style={styles.listItemURL}> {props.url} </Text>
+          <Text style={styles.listItemDate}> {props.date} </Text>
         </TouchableOpacity>
 
       <ScrollView
             showsHorizontalScrollIndicator = {true}
             indicatorStyle={'white'}
             horizontal={true}
+            borderWidth={1}
+            borderRadius={15}
             {...props._panResponder.panHandlers}
             onScrollEndDrag={() => props.fScroll.setNativeProps({ scrollEnabled: true })} >
         { props.imgList.map((item,index) =>
@@ -254,7 +269,7 @@ export class MainPage extends React.Component {
       isProgress: false,
       page : 1 ,
       items : [],
-      searchQuery : "서울대 맛집",
+      searchQuery : "서울대입구역 맛집",
       itemIndex : 1,
     };
   }
@@ -359,7 +374,9 @@ export class MainPage extends React.Component {
               { this.state.items.map((item,index) => <Item key = {index} fScroll = {this.fScroll} _panResponder = {this._panResponder} onPress={ () => this.onclick(item)} {...item} />) }
             </ScrollView>
             {/*<TouchableOpacity>*/}
-            <Button title="SearchMore" onPress={ ()=> this.getNextPage()}/>
+
+          {this.state.items.length > 0 && <Button style={styles.searchMore} title="SearchMore" onPress={ ()=> this.getNextPage()}/>}
+
             {/*</TouchableOpacity>*/}
             <Text style={styles.footer}>Crawling Without ANNOYING Advertise</Text>
           <BackHandler/>
@@ -449,16 +466,40 @@ const styles = StyleSheet.create({
    * **/
 
   listItemParent:{
-    borderRadius:10,
-    borderWidth: 1,
+    borderRadius:15,
+    borderWidth: 10,
     borderColor: '#fff',
     backgroundColor: 'transparent',
+  },
+
+  searchMore:{
+    color:'#03d05e',
+    borderRadius:15,
+    borderWidth: 10,
+    // borderColor: '#fff',
   },
 
   listItemText:{
     flex:1,
     fontSize : 20,
     color : Colors.black,
+    marginBottom:5,
+    fontFamily: 'NanumGothic',
+    fontWeight: '600',
+    fontStyle: 'normal',
+
+  },
+
+  listItemDate:{
+    flex:1,
+    fontSize : 15,
+    alignSelf:'flex-end',
+    color : Colors.black,
+    marginBottom:5,
+    fontFamily: 'NanumGothic',
+    fontWeight: '600',
+    fontStyle: 'normal',
+
   },
 
   listItemURL:{

@@ -20,6 +20,7 @@
 		5287B21D6EA53221BF9057BE /* libPods-SearchNBlogWithoutAdsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E43A3C569CFFBB7D3B5411E9 /* libPods-SearchNBlogWithoutAdsTests.a */; };
 		68B064D4346E03C3937C30EF /* libPods-SearchNBlogWithoutAds-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020C96175C5E34F1B9EA037 /* libPods-SearchNBlogWithoutAds-tvOS.a */; };
 		D1991AAC780CEB348D6E935E /* libPods-SearchNBlogWithoutAds-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 128D1AB05145F1AA81A5C24D /* libPods-SearchNBlogWithoutAds-tvOSTests.a */; };
+		F1CD71CD23A60B5500FFC81B /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = F1CD71CC23A60B5500FFC81B /* Fonts */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		E43A3C569CFFBB7D3B5411E9 /* libPods-SearchNBlogWithoutAdsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SearchNBlogWithoutAdsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
+		F1CD71CC23A60B5500FFC81B /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		F55027C39455D236CB827433 /* Pods-SearchNBlogWithoutAds.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SearchNBlogWithoutAds.debug.xcconfig"; path = "Target Support Files/Pods-SearchNBlogWithoutAds/Pods-SearchNBlogWithoutAds.debug.xcconfig"; sourceTree = "<group>"; };
 		FF235CCF62706FBD46901899 /* Pods-SearchNBlogWithoutAds-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SearchNBlogWithoutAds-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-SearchNBlogWithoutAds-tvOSTests/Pods-SearchNBlogWithoutAds-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -161,7 +163,6 @@
 				353C9BB20EDA84D992EF9FEF /* Pods-SearchNBlogWithoutAdsTests.debug.xcconfig */,
 				CBE6CF8028B1D60647BC7063 /* Pods-SearchNBlogWithoutAdsTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -175,6 +176,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				F1CD71CC23A60B5500FFC81B /* Fonts */,
 				13B07FAE1A68108700A75B9A /* SearchNBlogWithoutAds */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* SearchNBlogWithoutAdsTests */,
@@ -336,6 +338,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1CD71CD23A60B5500FFC81B /* Fonts in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
