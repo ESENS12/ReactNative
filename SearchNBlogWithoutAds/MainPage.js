@@ -16,6 +16,7 @@ import {
   PanResponder,
     Modal,
     ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 
 import {
@@ -72,6 +73,12 @@ async function getBlogResVol2(searchQuery, page){
   //   return;
   // }
 
+  const screenWidth = Math.round(Dimensions.get('window').width);
+  const screenHeight = Math.round(Dimensions.get('window').height);
+
+  console.log('width : ' , screenWidth);
+  console.log('height : ' , screenHeight);
+
   let ulList = [];
   const searchUrl = `https://search.naver.com/search.naver?query=${searchQuery}&sm=tab_pge&srchby=all&st=sim&where=post&start=${page}`;
   const response = await fetch(searchUrl);
@@ -79,6 +86,12 @@ async function getBlogResVol2(searchQuery, page){
   const $ = cheerio.load(htmlString);
   console.log("search Url : "  + searchUrl);
   const $bodyList = $("li.sh_blog_top");
+
+
+  // width :  360
+  // height :  725
+  // 375
+  // 812
 
   // console.log("result items : "+$bodyList.length);
   $bodyList.each(function(i, elem) {
@@ -211,7 +224,7 @@ const Item = (props) => {
   }
 
   return (
-    <View style={styles.listItemParent}>
+    <View style={[styles.listItemParent, {width:props.state.screenWidth-20}]}>
         {/*<Text style={styles.listItemText}> {props.index} </Text>*/}
         <TouchableOpacity  onPress ={props.onPress} >
           <Text style={styles.listItemText}> {props.title} </Text>
@@ -222,16 +235,14 @@ const Item = (props) => {
             showsHorizontalScrollIndicator = {true}
             indicatorStyle={'white'}
             horizontal={true}
-            borderWidth={1}
-            borderRadius={15}
-            decelerationRate={0}
-            snapToInterval={360}
+            decelerationRate={"fast"}
+            snapToInterval={100}
             snapToAlignment={"center"}
             {...props._panResponder.panHandlers}
             onScrollEndDrag={() => props.fScroll.setNativeProps({ scrollEnabled: true })} >
         { props.imgList.map((item,index) =>
 
-            <Image key={index} style={{width: 360, height: 260}} source={{uri:item}} />
+            <Image overflow={'hidden'} borderWidth={1} borderRadius={15} key={index} style={{width: props.state.screenWidth-21, height: 260}} source={{uri:item}} />
 
             ) }
       </ScrollView>
@@ -274,6 +285,8 @@ export class MainPage extends React.Component {
       isProgress: false,
       page : 1 ,
       items : [],
+      screenWidth : 0,
+      screenHeight : 0,
       isScrollEnd: false,
       searchQuery : "서울대입구역 맛집",
       itemIndex : 1,
@@ -320,6 +333,11 @@ export class MainPage extends React.Component {
   }
 
   componentDidMount(){
+
+    const screenWidth = Math.round(Dimensions.get('window').width);
+    const screenHeight = Math.round(Dimensions.get('window').height);
+
+    this.setState({screenWidth : screenWidth, screenHeight : screenHeight});
     this.getNextPage();
     // this.refs.searchBar.focus();
     this._panResponder = PanResponder.create({
@@ -355,7 +373,7 @@ export class MainPage extends React.Component {
 
             <View style={styles.searchQueryParent}>
 
-              <SearchBar style={styles.searchBar}
+              <SearchBar style={[styles.searchBar,{width:this.state.screenWidth-20}]}
                   ref="searchBar"
                   placeholder="Search"
                   hideBackground={true}
@@ -370,9 +388,10 @@ export class MainPage extends React.Component {
                         onScroll={({nativeEvent}) => {
                             this.setState({isScrollEnd:isCloseToBottom(nativeEvent)})
                         }}
-                        scrollEventThrottle={200}
+                        scrollEventThrottle={0}
             >
-              { this.state.items.map((item,index) => <Item key = {index} fScroll = {this.fScroll} _panResponder = {this._panResponder} onPress={ () => this.onclick(item)} {...item} />) }
+              { this.state.items.map((item,index) => <Item key = {index} fScroll = {this.fScroll} _panResponder = {this._panResponder}
+                                                           onPress={ () => this.onclick(item)} state={this.state} {...item} />) }
             </ScrollView>
 
           {this.state.items.length > 0 && this.state.isScrollEnd &&
@@ -463,7 +482,9 @@ const styles = StyleSheet.create({
   //검색바
   searchBar: {
     height:30,
-    alignSelf: 'stretch',
+    alignSelf: 'center',
+    borderWidth : 0,
+    borderRadius: 10,
     // backgroundColor:'#03d05e',
     textAlignVertical: 'center',
   },
@@ -475,8 +496,11 @@ const styles = StyleSheet.create({
 
   listItemParent:{
     borderRadius:15,
-    borderWidth: 10,
-    borderColor: '#fff',
+    borderWidth: 1,
+    // padding:10,
+    margin:10,
+    alignSelf:'center',
+    borderColor: 'transparent',
     backgroundColor: 'transparent',
   },
 
