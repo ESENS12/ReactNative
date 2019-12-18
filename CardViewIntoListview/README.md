@@ -1,15 +1,15 @@
-#CardViewIntoListView
+# CardViewIntoListView
 ## CustomList view item(CarouselCardView)  
 
 
-#References
+# References
  - CarouselCardView 
 
  https://www.npmjs.com/package/react-native-snap-carousel
  https://github.com/ESENS12/ReactNative/tree/master/SnapCardViewTest
 
 
-#Components
+# Components
 - styled-components
 npm install --save styled-components
 
