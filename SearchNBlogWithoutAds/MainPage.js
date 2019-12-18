@@ -31,6 +31,9 @@ import SearchBar from 'react-native-search-bar';
 
 import {BackHandler} from './Component/BackHandler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import styled from "styled-components/native";
+import Dots from 'react-native-dots-pagination';
+
 
 const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
 
@@ -100,6 +103,7 @@ async function getBlogResVol2(searchQuery, page){
     ulList[i] = {
       title: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('title'),
       isFake : false,
+
       // index : itemIndex,
       // title: $(this).find('strong[name=news-tl]').text(),
       url: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('href'),
@@ -214,6 +218,7 @@ async function getBlogResVol2(searchQuery, page){
     }
 
   }
+
   return ulList;
 }
 
@@ -232,8 +237,7 @@ const Item = (props) => {
         </TouchableOpacity>
 
       <ScrollView
-            showsHorizontalScrollIndicator = {true}
-            indicatorStyle={'white'}
+            showsHorizontalScrollIndicator = {false}
             horizontal={true}
             decelerationRate={"fast"}
             snapToInterval={100}
@@ -242,10 +246,14 @@ const Item = (props) => {
             onScrollEndDrag={() => props.fScroll.setNativeProps({ scrollEnabled: true })} >
         { props.imgList.map((item,index) =>
 
-            <Image overflow={'hidden'} borderWidth={1} borderRadius={15} key={index} style={{width: props.state.screenWidth-21, height: 260}} source={{uri:item}} />
+            <Image overflow={'hidden'} borderWidth={1} borderRadius={15} key={index} style={{width: props.state.screenWidth-45, height: 220, margin:5,}} source={{uri:item}} />
 
             ) }
       </ScrollView>
+      {/*<View style={{ flexDirection: 'row' , width : width/2, alignItems:'center'}} >*/}
+        {/*<Dots style ={{flex:1}} length={props.imgList.length} width={this.props.state.screenWidth/2} active={props.currentItemIndex} />*/}
+      {/*</View>*/}
+      {/*<View style={styles.bottomLine}/>*/}
         {/*<CarouselCardView key={props.url} imgList={props.imgList} title={props.title} />*/}
         {/*<Text>{props.lead}</Text>*/}
     </View>
@@ -253,6 +261,8 @@ const Item = (props) => {
 };
 
 export class MainPage extends React.Component {
+
+
 
   static navigationOptions = {
     title : "Home",
@@ -293,6 +303,14 @@ export class MainPage extends React.Component {
     };
   }
 
+
+  _handleScroll = (event) => {
+
+    console.log(parseInt(event.nativeEvent.contentOffset.x/width));
+    const currentIndex = parseInt(event.nativeEvent.contentOffset.x/width);
+    return currentIndex;
+
+  };
 
   openProgressbar = (b_isOpen) => {
     this.setState({ isProgress: b_isOpen })
@@ -425,6 +443,10 @@ const CustomProgressBar = ({ visible }) => (
 );
 
 
+const BoxShadow = styled.View`
+  box-shadow: 10px 5px 5px black;
+`;
+
 const styles = StyleSheet.create({
 
 // { flex: 1, backgroundColor: '#dcdcdc', alignItems: 'center', justifyContent: 'center' }
@@ -494,14 +516,36 @@ const styles = StyleSheet.create({
    *
    * **/
 
+  bottomLine:{
+
+    alignSelf:'stretch',
+    marginTop:20,
+    marginRight:20,
+    marginLeft:20,
+    borderStyle:'dashed',
+    borderBottomColor: 'blue',
+    borderBottomWidth: 1,
+    height:1,
+
+  },
+
   listItemParent:{
+    padding:5,
+    shadowColor: '#000',
+    overflow:'hidden',
+    shadowOffset: { width: 1, height: 5 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+    flex:1,
+
     borderRadius:15,
     borderWidth: 1,
     // padding:10,
     margin:10,
     alignSelf:'center',
     borderColor: 'transparent',
-    backgroundColor: 'transparent',
+    backgroundColor: '#fff',
   },
 
   searchMoreBackground:{
@@ -555,6 +599,7 @@ const styles = StyleSheet.create({
   },
   container:{
     flex : 1,
+    backgroundColor: '#ebfffb',
   },
   sectionContainer: {
     marginTop: 32,
