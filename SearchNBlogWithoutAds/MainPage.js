@@ -33,48 +33,12 @@ import {BackHandler} from './Component/BackHandler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled from "styled-components/native";
 import Dots from 'react-native-dots-pagination';
-
+import MyItem from './Component/MyItem';
 
 const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
 
-/*
-쉬즈블로그
-디너의여왕
-에코블로그
-포블로그
-리뷰플레이스
-티블
-놀러와체험단 = 이슈블로그 = 허니블로그
-오른쪽방향으로 놀러와 체험단에서 파생된 체험단
-미블
-리얼리뷰
-* */
-
-//스토리앤 -> 스토리앤
-//서울오빠 -> http://www.seoulouba.co.kr/
-//레뷰(구 위블) -> https://www.revu.net/
-//위블(현 레뷰) -> https://www.weble.net/
-//오마이블로그 -> http://www.ohmyblog.co.kr // 특이사항 : tracking하지 않는 걸로 보임, img src 내부 아닌 href에 url이 박혀있는경우 있었음
-//미블    -> mrblog.net
-//티블    -> www.tble.kr
-//어메이징블로그
-//파블로체험단
-//디너의 여왕 -> https://dinnerqueen.net/
-
-
-
-function RemoveItemList(){
-
-}
 
 async function getBlogResVol2(searchQuery, page){
-  //
-  // console.log("SEARCH QUERY length: " + searchQuery.length);
-  // if(searchQuery == ""){
-  //   RemoveItemList();
-  //   // this.setState({searchQuery : ""});
-  //   return;
-  // }
 
   const screenWidth = Math.round(Dimensions.get('window').width);
   const screenHeight = Math.round(Dimensions.get('window').height);
@@ -103,7 +67,7 @@ async function getBlogResVol2(searchQuery, page){
     ulList[i] = {
       title: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('title'),
       isFake : false,
-
+      currentIndex : 0,
       // index : itemIndex,
       // title: $(this).find('strong[name=news-tl]').text(),
       url: $(this).find('.sh_blog_title._sp_each_url._sp_each_title').attr('href'),
@@ -140,13 +104,6 @@ async function getBlogResVol2(searchQuery, page){
       const response = await fetch(blogUrl);
       const htmlString = await response.text();
       const $ = cheerio.load(htmlString);
-
-      // console.log('$() se-post_ct : ' + $(".post_ct").length);
-      // console.log('$() .post_ct img  : ' + $(".post_ct img").length);
-      // console.log('$()._img  : ' + $("._img").length);
-
-      // console.log('$() ._img  : ' + $("._img").length);
-      // console.log('$() _img _inl fx  : ' + $("_img._inl.fx").length);
 
       let $linkData;
       if($(".post_ct img").length > $("._img").length){
@@ -222,47 +179,7 @@ async function getBlogResVol2(searchQuery, page){
   return ulList;
 }
 
-const Item = (props) => {
-
-  if (props.isFake) {
-    return null
-  }
-
-  return (
-    <View style={[styles.listItemParent, {width:props.state.screenWidth-20}]}>
-        {/*<Text style={styles.listItemText}> {props.index} </Text>*/}
-        <TouchableOpacity  onPress ={props.onPress} >
-          <Text style={styles.listItemText}> {props.title} </Text>
-          <Text style={styles.listItemDate}> {props.date} </Text>
-        </TouchableOpacity>
-
-      <ScrollView
-            showsHorizontalScrollIndicator = {false}
-            horizontal={true}
-            decelerationRate={"fast"}
-            snapToInterval={100}
-            snapToAlignment={"center"}
-            {...props._panResponder.panHandlers}
-            onScrollEndDrag={() => props.fScroll.setNativeProps({ scrollEnabled: true })} >
-        { props.imgList.map((item,index) =>
-
-            <Image overflow={'hidden'} borderWidth={1} borderRadius={15} key={index} style={{width: props.state.screenWidth-45, height: 220, margin:5,}} source={{uri:item}} />
-
-            ) }
-      </ScrollView>
-      {/*<View style={{ flexDirection: 'row' , width : width/2, alignItems:'center'}} >*/}
-        {/*<Dots style ={{flex:1}} length={props.imgList.length} width={this.props.state.screenWidth/2} active={props.currentItemIndex} />*/}
-      {/*</View>*/}
-      {/*<View style={styles.bottomLine}/>*/}
-        {/*<CarouselCardView key={props.url} imgList={props.imgList} title={props.title} />*/}
-        {/*<Text>{props.lead}</Text>*/}
-    </View>
-  )
-};
-
 export class MainPage extends React.Component {
-
-
 
   static navigationOptions = {
     title : "Home",
@@ -287,6 +204,12 @@ export class MainPage extends React.Component {
 
   };
 
+  //
+  // _handleScroll = (event) => {
+  //     console.log(parseInt(event.nativeEvent.contentOffset.x/this.state.screenWidth));
+  //     const currentIndex = parseInt(event.nativeEvent.contentOffset.x/this.state.screenWidth);
+  //     // currentIndex = currentIndex;
+  // };
 
   constructor(props) {
     super(props);
@@ -304,13 +227,7 @@ export class MainPage extends React.Component {
   }
 
 
-  _handleScroll = (event) => {
 
-    console.log(parseInt(event.nativeEvent.contentOffset.x/width));
-    const currentIndex = parseInt(event.nativeEvent.contentOffset.x/width);
-    return currentIndex;
-
-  };
 
   openProgressbar = (b_isOpen) => {
     this.setState({ isProgress: b_isOpen })
@@ -408,8 +325,8 @@ export class MainPage extends React.Component {
                         }}
                         scrollEventThrottle={0}
             >
-              { this.state.items.map((item,index) => <Item key = {index} fScroll = {this.fScroll} _panResponder = {this._panResponder}
-                                                           onPress={ () => this.onclick(item)} state={this.state} {...item} />) }
+              { this.state.items.map((item,index) => <MyItem key = {index} fScroll = {this.fScroll} _panResponder = {this._panResponder}
+                                                           onPress={ () => this.onclick(item)} state={this.state}   {...item} />) }
             </ScrollView>
 
           {this.state.items.length > 0 && this.state.isScrollEnd &&
