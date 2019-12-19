@@ -1,4 +1,4 @@
-import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, TouchableOpacity,TouchableWithoutFeedback, View} from 'react-native';
 import Dots from 'react-native-dots-pagination';
 import React,{Component} from 'react';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -19,7 +19,7 @@ export default class MyItem extends Component {
     _handleScroll = (event) => {
 
         // console.log(parseInt(event.nativeEvent.contentOffset.x/this.props.state.screenWidth));
-        const currentIndex = parseInt(event.nativeEvent.contentOffset.x/this.props.state.screenWidth);
+        const currentIndex = parseInt(event.nativeEvent.contentOffset.x/(this.props.state.screenWidth-45));
         this.setState({currentItemIndex : currentIndex })
 
     };
@@ -34,30 +34,37 @@ export default class MyItem extends Component {
 
             <View style={[styles.listItemParent, {width:this.props.state.screenWidth-20}]}>
                 {/*<Text style={styles.listItemText}> {props.index} </Text>*/}
-                <TouchableOpacity  onPress ={this.props.onPress} >
+                <TouchableOpacity onPress ={this.props.onPress}>
                     <Text style={styles.listItemText}> {this.props.title} </Text>
                     <Text style={styles.listItemDate}> {this.props.date} </Text>
                 </TouchableOpacity>
-
+                {this.props.imgList.length > 1 &&
                 <ScrollView
-                    showsHorizontalScrollIndicator = {false}
+                    showsHorizontalScrollIndicator={false}
                     horizontal={true}
-                    decelerationRate={"fast"}
-                    snapToInterval={100}
-                    scrollEventThrottle={10}
-                    onScroll={(event)=> { this._handleScroll(event)}}
+                    decelerationRate={0.88}
+                    snapToInterval={this.props.state.screenWidth - 35}
+                    scrollEventThrottle={0}
+                    onScroll={(event) => {
+                        this._handleScroll(event)
+                    }}
                     snapToAlignment={"center"}
                     {...this.props._panResponder.panHandlers}
-                    onScrollEndDrag={() => this.props.fScroll.setNativeProps({ scrollEnabled: true })} >
-                    { this.props.imgList.map((item,index) =>
-
-                        <Image overflow={'hidden'} borderWidth={1} borderRadius={15} key={index} style={{width: this.props.state.screenWidth-45, height: 220, margin:5,}} source={{uri:item}} />
-
-                    ) }
+                    onScrollEndDrag={() => this.props.fScroll.setNativeProps({scrollEnabled: true})}>
+                    {this.props.imgList.map((item, index) =>
+                        <TouchableWithoutFeedback onPress ={this.props.onPress}>
+                        <Image  overflow={'hidden'} borderWidth={1} borderRadius={15} key={index}
+                               style={{width: this.props.state.screenWidth - 45, height: 220, margin: 5,}}
+                               source={{uri: item}}/>
+                        </TouchableWithoutFeedback>
+                    )}
                 </ScrollView>
+                }
+                {this.props.imgList.length >3 &&
                 <View style={{ flexDirection: 'row' , width : this.props.state.screenWidth/2, alignItems:'center', alignSelf:'center', flex:1}} >
-                    <Dots style ={{flex:1}} length={this.props.imgList.length} width={this.props.state.screenWidth/2} active={this.state.currentItemIndex} />
+                    <Dots style ={{flex:1}} length={this.props.imgList.length-1} width={this.props.state.screenWidth/2} active={this.state.currentItemIndex} />
                 </View>
+                }
                 {/*<View style={styles.bottomLine}/>*/}
                 {/*<Text>{props.lead}</Text>*/}
             </View>
@@ -88,6 +95,7 @@ const styles = StyleSheet.create({
 
     listItemParent:{
         padding:5,
+
         shadowColor: '#000',
         overflow:'hidden',
         shadowOffset: { width: 1, height: 5 },
@@ -100,9 +108,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         // padding:10,
         margin:10,
+        marginTop:5,
+        marginBottom:5,
         alignSelf:'center',
         borderColor: 'transparent',
-        backgroundColor: '#fff',
+        backgroundColor: '#f2f7f2',
     },
 
     listItemText:{
@@ -110,6 +120,7 @@ const styles = StyleSheet.create({
         fontSize : 20,
         textAlign :'center',
         color : Colors.black,
+        marginTop:5,
         marginBottom:5,
     },
 

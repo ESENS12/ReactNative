@@ -16,6 +16,7 @@ import {
   PanResponder,
     Modal,
     ActivityIndicator,
+  TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
 
@@ -38,7 +39,7 @@ import MyItem from './Component/MyItem';
 const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
 
 
-async function getBlogResVol2(searchQuery, page){
+async function getBlogResVol2(searchQuery, page, searchOption){
 
   const screenWidth = Math.round(Dimensions.get('window').width);
   const screenHeight = Math.round(Dimensions.get('window').height);
@@ -47,18 +48,15 @@ async function getBlogResVol2(searchQuery, page){
   console.log('height : ' , screenHeight);
 
   let ulList = [];
-  const searchUrl = `https://search.naver.com/search.naver?query=${searchQuery}&sm=tab_pge&srchby=all&st=sim&where=post&start=${page}`;
+  const searchUrl = `https://search.naver.com/search.naver?query=${searchQuery}&sm=tab_pge&srchby=all&st=${searchOption}&where=post&start=${page}`;
   const response = await fetch(searchUrl);
   const htmlString = await response.text();
   const $ = cheerio.load(htmlString);
   console.log("search Url : "  + searchUrl);
   const $bodyList = $("li.sh_blog_top");
 
-
-  // width :  360
-  // height :  725
-  // 375
-  // 812
+  //sim -> 관련도순
+  //date -> 날짜순
 
   // console.log("result items : "+$bodyList.length);
   $bodyList.each(function(i, elem) {
@@ -99,6 +97,15 @@ async function getBlogResVol2(searchQuery, page){
 
       console.log("=========================================");
       console.log("blogUrl : " + blogUrl);
+
+      //todo 다음 블로그는 exception 처리 ..BodyList를 파싱하는데에서 부터 문제가 됨
+      //todo 다음외에도 다른 블로그들이 있음... 기존의 tag, class로 찾아가는 스크래핑 방법을 변경할 필요가 있음 (기능 확장)
+      if(!blogUrl.includes("blog.naver")){
+        console.log("find DaumBlog! skip this blog");
+        ulList[i].isFake = true;
+        continue;
+      }
+
 
 
       const response = await fetch(blogUrl);
@@ -196,20 +203,30 @@ export class MainPage extends React.Component {
 
     // headerRight: () => (
     //     <Button
-    //         onPress={() => alert('This is a button!')}
-    //         title="Info"
+    //         onPress={this._searchOption}
+    //         title="Option"
     //         color="#fff"
     //     />
     // ),
 
   };
 
+
+
   //
-  // _handleScroll = (event) => {
-  //     console.log(parseInt(event.nativeEvent.contentOffset.x/this.state.screenWidth));
-  //     const currentIndex = parseInt(event.nativeEvent.contentOffset.x/this.state.screenWidth);
-  //     // currentIndex = currentIndex;
-  // };
+  _searchOption = () => {
+    let searchOption = '';
+
+    if(this.state.searchOption === 'date'){
+      searchOption = 'sim';
+    }else{
+      searchOption = 'date';
+    }
+
+    this.setState({searchOption:searchOption, items:[] , page : 1},()=> {
+      this.getNextPage();
+    });
+  };
 
   constructor(props) {
     super(props);
@@ -221,6 +238,7 @@ export class MainPage extends React.Component {
       screenWidth : 0,
       screenHeight : 0,
       isScrollEnd: false,
+      searchOption : 'sim',
       searchQuery : "서울대입구역 맛집",
       itemIndex : 1,
     };
@@ -255,7 +273,7 @@ export class MainPage extends React.Component {
     // const getItemRes  = await getBlogRes(this.state.searchQuery,this.state.page);
     this.openProgressbar(true);
 
-    const getItemRes  = await getBlogResVol2(this.state.searchQuery,this.state.page);
+    const getItemRes  = await getBlogResVol2(this.state.searchQuery,this.state.page,this.state.searchOption);
 
     this.setState( state => {
       return {items : this.state.items.concat(getItemRes), page};
@@ -308,7 +326,7 @@ export class MainPage extends React.Component {
 
             <View style={styles.searchQueryParent}>
 
-              <SearchBar style={[styles.searchBar,{width:this.state.screenWidth-20}]}
+              <SearchBar style={[styles.searchBar,{width:this.state.screenWidth-60}]}
                   ref="searchBar"
                   placeholder="Search"
                   hideBackground={true}
@@ -316,6 +334,10 @@ export class MainPage extends React.Component {
                   onSearchButtonPress={()=> this._searchIt()}
                   onCancelButtonPress={() => this.setState({searchQuery : ""})}
               />
+
+              <TouchableWithoutFeedback style={{flex:2}} onPress={ ()=> this._searchOption()}>
+                <Icon name="ios-funnel" size={25} color={"white"} style={{alignSelf:'center',flex:1}}/>
+              </TouchableWithoutFeedback>
 
             </View>
 
@@ -393,6 +415,7 @@ const styles = StyleSheet.create({
     height:45,
     alignSelf:'stretch',
     backgroundColor:'#03d05e',
+    flexDirection:'row',
     // flex : 1,
     // backgroundColor: Colors.primary,
   },
@@ -420,6 +443,7 @@ const styles = StyleSheet.create({
 
   //검색바
   searchBar: {
+    flex:8,
     height:30,
     alignSelf: 'center',
     borderWidth : 0,
@@ -466,6 +490,7 @@ const styles = StyleSheet.create({
   },
 
   searchMoreBackground:{
+    marginTop:10,
     backgroundColor:'#03d05e',
     borderRadius:3,
     borderWidth: 0.01,
@@ -516,7 +541,7 @@ const styles = StyleSheet.create({
   },
   container:{
     flex : 1,
-    backgroundColor: '#ebfffb',
+    backgroundColor: '#fff',
   },
   sectionContainer: {
     marginTop: 32,
