@@ -239,7 +239,7 @@ export class MainPage extends React.Component {
       screenHeight : 0,
       isScrollEnd: false,
       searchOption : 'sim',
-      searchQuery : "서울대입구역 맛집",
+      searchQuery : "서울대맛집",
       itemIndex : 1,
     };
   }
@@ -335,13 +335,14 @@ export class MainPage extends React.Component {
                   onCancelButtonPress={() => this.setState({searchQuery : ""})}
               />
 
-              <TouchableWithoutFeedback style={{flex:2}} onPress={ ()=> this._searchOption()}>
-                <Icon name="ios-funnel" size={25} color={"white"} style={{alignSelf:'center',flex:1}}/>
+              <TouchableWithoutFeedback style={{flex:2, alignContent:'center'}} onPress={ ()=> this._searchOption()}>
+                <Icon name="ios-funnel" size={25} color={"white"} style={{margin:8,alignSelf:'center',flex:1}}/>
               </TouchableWithoutFeedback>
 
             </View>
 
             <ScrollView ref={(e) => { this.fScroll = e }}
+                        removeClippedSubviews={true}
                         onScroll={({nativeEvent}) => {
                             this.setState({isScrollEnd:isCloseToBottom(nativeEvent)})
                         }}
@@ -444,6 +445,7 @@ const styles = StyleSheet.create({
   //검색바
   searchBar: {
     flex:8,
+    fontSize:180,
     height:30,
     alignSelf: 'center',
     borderWidth : 0,

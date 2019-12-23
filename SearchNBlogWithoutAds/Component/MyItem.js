@@ -50,17 +50,18 @@ export default class MyItem extends Component {
                     }}
                     snapToAlignment={"center"}
                     {...this.props._panResponder.panHandlers}
+                    removeClippedSubviews={true}
                     onScrollEndDrag={() => this.props.fScroll.setNativeProps({scrollEnabled: true})}>
                     {this.props.imgList.map((item, index) =>
-                        <TouchableWithoutFeedback onPress ={this.props.onPress}>
-                        <Image  overflow={'hidden'} borderWidth={1} borderRadius={15} key={index}
+                        <TouchableWithoutFeedback onPress ={this.props.onPress} key={index}>
+                        <Image overflow={'hidden'} borderWidth={1} borderRadius={15}
                                style={{width: this.props.state.screenWidth - 45, height: 220, margin: 5,}}
                                source={{uri: item}}/>
                         </TouchableWithoutFeedback>
                     )}
                 </ScrollView>
                 }
-                {this.props.imgList.length >3 &&
+                {this.props.imgList.length > 3 &&
                 <View style={{ flexDirection: 'row' , width : this.props.state.screenWidth/2, alignItems:'center', alignSelf:'center', flex:1}} >
                     <Dots style ={{flex:1}} length={this.props.imgList.length-1} width={this.props.state.screenWidth/2} active={this.state.currentItemIndex} />
                 </View>
