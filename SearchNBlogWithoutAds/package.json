@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "base-64": "^0.1.0",
     "cheerio-without-node-native": "^0.20.2",
     "htmlparser2-without-node-native": "^3.9.2",
     "react": "16.9.0",

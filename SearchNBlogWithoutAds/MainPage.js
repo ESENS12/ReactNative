@@ -29,15 +29,12 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import SearchBar from 'react-native-search-bar';
-
 import {BackHandler} from './Component/BackHandler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled from "styled-components/native";
 import Dots from 'react-native-dots-pagination';
 import MyItem from './Component/MyItem';
-
-const fakeBlogKeywordList = ["스토리앤","seoulouba","revu","weble","ohmyblog","mrblog","tble","dinnerqueen"];
-
+import {classfier} from './Component/BlogClassifier';
 
 async function getBlogResVol2(searchQuery, page, searchOption){
 
@@ -95,6 +92,8 @@ async function getBlogResVol2(searchQuery, page, searchOption){
         blogUrl = ulList[i].url.replace("https://", "https://m.");
       }
 
+      // https://m.blog.naver.com/choco900208?Redirect=Log&logNo=221611529559
+
       console.log("=========================================");
       console.log("blogUrl : " + blogUrl);
 
@@ -105,8 +104,6 @@ async function getBlogResVol2(searchQuery, page, searchOption){
         ulList[i].isFake = true;
         continue;
       }
-
-
 
       const response = await fetch(blogUrl);
       const htmlString = await response.text();
@@ -132,34 +129,26 @@ async function getBlogResVol2(searchQuery, page, searchOption){
         }else{
           atagData = elem.attribs.src;
         }
+        // console.log('atag  : ' + atagData);
+        // console.log('decode : ' + decodeURI(atagData));
 
         //지도나, 스티커, 프로필은 PASS
         if(elem.attribs.class === "se-sticker-image" || elem.attribs.class === 'se-map-image'
-        || elem.attribs.alt === "프로필"){
+        || elem.attribs.alt === "프로필" ){
           // console.log("this is map or stricker :" + atagData);
           return true
         }
 
         if(atagData != null){
-            // console.log("atagData : ", atagData);
           imgList[i] = atagData.substring(0,atagData.lastIndexOf("?") + 1) + "type=w800";
 
         }else{
-
           console.log('atagData null');
           return true;
         }
 
-        for (let j = 0; j < fakeBlogKeywordList.length; j++) {
-          let fake = fakeBlogKeywordList[j];
+          b_isFake = classfier(atagData);
 
-          if (atagData.includes(fake)) {
-            console.log("this is Fake post :  " + atagData);
-            console.log("from : " + fake);
-            b_isFake = true;
-          }
-
-        }
       });
 
       ulList[i].isFake = b_isFake;
@@ -169,12 +158,6 @@ async function getBlogResVol2(searchQuery, page, searchOption){
         console.log("not fake");
       }
 
-      // console.log("=======================================", i);
-      // console.log("index : ", i , ", img : " ,ulList[i].imgList[0])
-      // ulList[i].imgList.index = i;
-
-      // console.log("not Fake Image TagNum : " + fakeNum );
-      // console.log("ulList[i].isFake : " + ulList[i].isFake );
       console.log("imgList length : " + ulList[i].imgList.length );
 
     }catch (e) {
@@ -239,9 +222,10 @@ export class MainPage extends React.Component {
       screenHeight : 0,
       isScrollEnd: false,
       searchOption : 'sim',
-      searchQuery : "서울대맛집",
+      searchQuery : "종로3가 조용관",
       itemIndex : 1,
     };
+    Icon.loadFont();
   }
 
 
