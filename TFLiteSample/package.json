@@ -10,8 +10,16 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.7.1",
+    "@tensorflow/tfjs": "^1.5.1",
+    "@tensorflow/tfjs-react-native": "^0.1.0-alpha.3",
+    "expo-gl": "^8.0.0",
+    "expo-gl-cpp": "^8.0.0",
     "react": "16.9.0",
-    "react-native": "0.61.5"
+    "react-native": "0.61.5",
+    "react-native-fs": "^2.16.2",
+    "react-native-image-picker": "^1.1.0",
+    "react-native-unimodules": "^0.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",
