@@ -7,18 +7,21 @@ import {
   View,
   Text,
   Button,
+  TextInput,
   StatusBar,
+  Keyboard,
   PermissionsAndroid,
 } from 'react-native';
 
 import { useCameraRoll } from 'react-native-hooks'
 
-import { GetAlbum } from './CameraRoll'
+import { GetAlbum } from './Components/CameraRoll'
 import { CurrentAppState  } from './AppState'
-import { Clipboard  } from './Clipboard'
-import { Layout  } from './Layout'
-import { BackHandler  } from './BackHandler'
-import { DeviceOrientation  } from './DeviceOrientation'
+import { Clipboard  } from './Components/Clipboard'
+import { Layout  } from './Components/Layout'
+import { BackHandler  } from './Components/BackHandler'
+import { DeviceOrientation  } from './Components/DeviceOrientation'
+import { KeyboardHandler  } from './Components/Keyboard'
 
 import {
   Header,
@@ -58,17 +61,6 @@ export default class App extends Component {
   };
 
 
-  componentDidMount() {
-    if (Platform.OS === 'android') {
-      this.requestCameraPermission();
-      console.log('this is Android device');
-    } else {
-      console.log('this is iOS device');
-      // this.getLocation();
-    }
-  }
-
-
   render(){
     return (
         <>
@@ -78,7 +70,8 @@ export default class App extends Component {
             {/*<Button title='Get Photos' onPress={() => getAlbum()}>Get Photos</Button>*/}
             {/*<CurrentAppState/>*/}
             {/*<Clipboard/>*/}
-            <Layout/>
+            {/*<Layout/>*/}
+            <KeyboardHandler/>
             {/*<DeviceOrientation/>*/}
             {/*<BackHandler/>*/}
             {/*<GetAlbum/>*/}
