@@ -11,6 +11,7 @@ import {
   TextInput,
   View,
   Text,
+    ToastAndroid,
   StatusBar,
   Button,
   PanResponder,
@@ -18,6 +19,7 @@ import {
     ActivityIndicator,
   TouchableWithoutFeedback,
   Dimensions,
+    BackHandler,
 } from 'react-native';
 
 import {
@@ -29,7 +31,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import SearchBar from 'react-native-search-bar';
-import {BackHandler} from './Component/BackHandler';
+// import {BackHandler} from './Component/BackHandler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled from "styled-components/native";
 import Dots from 'react-native-dots-pagination';
@@ -97,7 +99,6 @@ async function getBlogResVol2(searchQuery, page, searchOption){
       console.log("=========================================");
       console.log("blogUrl : " + blogUrl);
 
-      //todo 다음 블로그는 exception 처리 ..BodyList를 파싱하는데에서 부터 문제가 됨
       //todo 다음외에도 다른 블로그들이 있음... 기존의 tag, class로 찾아가는 스크래핑 방법을 변경할 필요가 있음 (기능 확장)
       if(!blogUrl.includes("blog.naver")){
         console.log("find DaumBlog! skip this blog");
@@ -222,14 +223,11 @@ export class MainPage extends React.Component {
       screenHeight : 0,
       isScrollEnd: false,
       searchOption : 'sim',
-      searchQuery : "종로3가 조용관",
+      searchQuery : "남도숯불고기창고",
       itemIndex : 1,
     };
     Icon.loadFont();
   }
-
-
-
 
   openProgressbar = (b_isOpen) => {
     this.setState({ isProgress: b_isOpen })
@@ -269,7 +267,31 @@ export class MainPage extends React.Component {
 
   }
 
+
+    handleBackButton = () => {
+      console.log('handleBackButton!');
+        // 2000(2초) 안에 back 버튼을 한번 더 클릭 할 경우 앱 종료
+        if (this.exitApp == undefined || !this.exitApp) {
+            ToastAndroid.show('한번 더 누르시면 종료됩니다.', ToastAndroid.SHORT);
+            this.exitApp = true;
+
+            this.timeout = setTimeout(
+                () => {
+                    this.exitApp = false;
+                },
+                2000    // 2초
+            );
+        } else {
+            clearTimeout(this.timeout);
+
+            BackHandler.exitApp();  // 앱 종료
+        }
+        return true;
+    }
+
   componentDidMount(){
+
+    BackHandler.addEventListener('hardwareBackPress',this.handleBackButton);
 
     const screenWidth = Math.round(Dimensions.get('window').width);
     const screenHeight = Math.round(Dimensions.get('window').height);
@@ -342,12 +364,11 @@ export class MainPage extends React.Component {
           </TouchableOpacity> }
 
             {/*<Text style={styles.footer}>Crawling Without ANNOYING Advertise</Text>*/}
-          <BackHandler/>
+          {/*<BackHandler pressdTime={100} />*/}
 
           </SafeAreaView>
     )}
 }
-
 
 const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
   const paddingToBottom = 20;
