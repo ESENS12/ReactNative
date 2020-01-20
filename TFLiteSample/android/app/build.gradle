@@ -184,7 +184,6 @@ android {
 }
 
 dependencies {
-    implementation project(':tflite-react-native')
     implementation project(':react-native-tensorflow-lite')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules

@@ -35,6 +35,7 @@ target 'TFLiteSample' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+
   target 'TFLiteSampleTests' do
     inherit! :search_paths
     # Pods for testing
@@ -42,7 +43,6 @@ target 'TFLiteSample' do
 
   use_native_modules!
   use_unimodules!
-
 end
 
 target 'TFLiteSample-tvOS' do

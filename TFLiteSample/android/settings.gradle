@@ -1,6 +1,4 @@
 rootProject.name = 'TFLiteSample'
-include ':tflite-react-native'
-project(':tflite-react-native').projectDir = new File(rootProject.projectDir, '../node_modules/tflite-react-native/android')
 include ':react-native-tensorflow-lite'
 project(':react-native-tensorflow-lite').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-tensorflow-lite/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)

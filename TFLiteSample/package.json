@@ -21,7 +21,8 @@
     "react-native": "0.61.5",
     "react-native-fs": "^2.16.2",
     "react-native-image-picker": "^1.1.0",
-    "react-native-unimodules": "^0.7.0"
+    "react-native-unimodules": "^0.7.0",
+    "tflite-react-native": "0.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",

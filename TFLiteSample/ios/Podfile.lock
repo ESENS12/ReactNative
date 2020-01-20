@@ -241,6 +241,10 @@ PODS:
     - React
   - RNFS (2.16.2):
     - React
+  - TensorFlowLite (1.13.1)
+  - TfliteReactNative (0.0.4):
+    - React
+    - TensorFlowLite
   - UMBarCodeScannerInterface (5.0.0)
   - UMCameraInterface (5.0.0)
   - UMConstantsInterface (5.0.0)
@@ -295,6 +299,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - RNFS (from `../node_modules/react-native-fs`)
+  - TfliteReactNative (from `../node_modules/tflite-react-native/ios`)
   - UMBarCodeScannerInterface (from `../node_modules/unimodules-barcode-scanner-interface/ios`)
   - UMCameraInterface (from `../node_modules/unimodules-camera-interface/ios`)
   - UMConstantsInterface (from `../node_modules/unimodules-constants-interface/ios`)
@@ -312,6 +317,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - boost-for-react-native
+    - TensorFlowLite
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -386,6 +392,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/async-storage"
   RNFS:
     :path: "../node_modules/react-native-fs"
+  TfliteReactNative:
+    :path: "../node_modules/tflite-react-native/ios"
   UMBarCodeScannerInterface:
     :path: !ruby/object:Pathname
     path: "../node_modules/unimodules-barcode-scanner-interface/ios"
@@ -460,6 +468,8 @@ SPEC CHECKSUMS:
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   RNCAsyncStorage: 44395cb9c7c1523104c2b499eb426ef7aff82bca
   RNFS: 0d4191b1052bef9ce70deff00a5b4169c62bbd9b
+  TensorFlowLite: 8b9dc4eb32eac0f8cb660c66bca7604da56dcc5a
+  TfliteReactNative: 57b925d87235478b7231e34dc96032286a67eada
   UMBarCodeScannerInterface: 3802c8574ef119c150701d679ab386e2266d6a54
   UMCameraInterface: 985d301f688ed392f815728f0dd906ca34b7ccb1
   UMConstantsInterface: bda5f8bd3403ad99e663eb3c4da685d063c5653c
@@ -474,6 +484,6 @@ SPEC CHECKSUMS:
   UMTaskManagerInterface: a98e37a576a5220bf43b8faf33cfdc129d2f441d
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: e00560b6dc71a96515659191147411ba8986bcea
+PODFILE CHECKSUM: c08baf4d94fd526c934fd6eeeecc9f324ccd3ad4
 
 COCOAPODS: 1.8.1
