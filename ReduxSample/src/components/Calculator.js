@@ -12,40 +12,42 @@ class Calculator extends Component {
     render() {
         return (
             <View style={calculatorStyles.container}>
-                <TextInput 
+                <TextInput
                     style={ calculatorStyles.input }
-                    keyboardType={'number-pad'} 
+                    onSubmitEditing ={Keyboard.dismiss}
+                    // keyboardType={'number-pad'}
                     maxLength={1}
                     placeholder={'0'}
                     onChangeText={(text) =>  {
-                        this.setState({text}); 
+                        this.setState({text});
                         var numberAsInt = 0
                         if (text !== '') {
                             numberAsInt = parseInt(text, 10);
                         }
                         console.log(numberAsInt);
-                        this.props.updateFirst(numberAsInt); 
+                        this.props.updateFirst(numberAsInt);
                     }}
 
                 />
                 <View style={calculatorStyles.view}>
                     <Text
-                        s3yle={ calculatorStyles.text }
+                        style={ calculatorStyles.text }
                     >+</Text>
                 </View>
-                <TextInput 
+                <TextInput
                     style={ calculatorStyles.input }
-                    keyboardType={'number-pad'} 
+                    // keyboardType={'number-pad'}
+                    onSubmitEditing ={Keyboard.dismiss}
                     maxLength={1}
                     placeholder={'0'}
                     onChangeText={(text) =>  {
-                        this.setState({text}); 
+                        this.setState({text});
                         var numberAsInt = 0
                         if (text !== '') {
                             numberAsInt = parseInt(text, 10);
                         }
                         console.log(numberAsInt);
-                        this.props.updateSecond(numberAsInt); 
+                        this.props.updateSecond(numberAsInt);
                     }}
                 />
                 <View style={ calculatorStyles.view }>
@@ -54,11 +56,11 @@ class Calculator extends Component {
                     >=</Text>
                 </View>
                 <View style={ calculatorStyles.view }>
-                    <Text 
+                    <Text
                         style={ calculatorStyles.text }
                     >{this.props.result}</Text>
                 </View>
-                
+
             </View>
         );
     }
@@ -89,25 +91,25 @@ var FONT_CALCULATOR_DEFULT = 18;
 const calculatorStyles = StyleSheet.create({
     container: {
         flexDirection:'row',
-        justifyContent: 'center', 
+        justifyContent: 'center',
         marginTop:50,
-        backgroundColor:'white', 
+        backgroundColor:'white',
     },
     input: {
-        width: 50 , 
-        height: 50, 
-        backgroundColor:'transparent', 
+        width: 50 ,
+        height: 50,
+        backgroundColor:'transparent',
         fontSize: FONT_CALCULATOR_DEFULT,
         justifyContent: 'center',
     },
     text: {
         fontSize: FONT_CALCULATOR_DEFULT,
-        backgroundColor:'transparent', 
+        backgroundColor:'transparent',
     },
     view: {
-        width: 50 , 
-        height: 50, 
-        backgroundColor:'transparent', 
+        width: 50 ,
+        height: 50,
+        backgroundColor:'transparent',
         justifyContent: 'center',
     },
   });
