@@ -22,7 +22,18 @@ export default class TodoList extends Component {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item, index}) =>
                     <Todo {...item}
-                          onClick={() => {this.props.onTodoClick(index)}} />}
+                          onClick={() => {
+                              if(item.completed){
+                                  this.props.onRestoreClick(index)
+                              }else{
+                                  this.props.onTodoClick(index)
+                              }
+
+
+                          }
+
+
+                          } />}
             />
         );
     }

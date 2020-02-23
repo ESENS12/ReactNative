@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addTodo, completeTodo, setVisibilityFilter, VisibilityFilters } from '../actions';
-import { SafeAreaView } from 'react-native';
+import { addTodo, completeTodo, restoreTodo,setVisibilityFilter, VisibilityFilters } from '../actions';
+import {SafeAreaView, Text, TouchableOpacity} from 'react-native';
+
 import AddTodo from '../components/AddTodo';
 import TodoList from '../components/TodoList';
 import Footer from '../components/Footer';
@@ -16,12 +17,16 @@ class Main extends Component {
         return (
             <SafeAreaView style={{marginTop: 22}}>
                 {/** 각 components 등록 **/}
-                <AddTodo
-                    onAddClick={text => dispatch(addTodo(text))} />
+
 
                 <TodoList
                     todos={visibleTodos}
-                    onTodoClick={index => {dispatch(completeTodo(index))}} />
+                    onTodoClick={index => {dispatch(completeTodo(index))}}
+                    onRestoreClick ={index => {dispatch(restoreTodo(index))}}
+                />
+
+                <AddTodo
+                    onAddClick={text => dispatch(addTodo(text))} />
 
                 <Footer
                     filter={visibilityFilter}

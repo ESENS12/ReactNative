@@ -1,4 +1,4 @@
-import { ADD_TODO, COMPLETE_TODO, VisibilityFilters, SET_VISIBILITY_FILTER } from './actions';
+import { ADD_TODO, COMPLETE_TODO, RESTORE_TODO, VisibilityFilters, SET_VISIBILITY_FILTER } from './actions';
 import { combineReducers } from 'redux';
 
 const { SHOW_ALL } = VisibilityFilters;
@@ -16,6 +16,16 @@ function todos(state = [], action) {
                 ...state.slice(0, action.index),
                 Object.assign({}, state[action.index], {
                     completed: true
+                }),
+                ...state.slice(action.index + 1)
+            ];
+
+
+        case RESTORE_TODO:
+            return [
+                ...state.slice(0, action.index),
+                Object.assign({}, state[action.index], {
+                    completed: false
                 }),
                 ...state.slice(action.index + 1)
             ];

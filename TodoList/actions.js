@@ -6,6 +6,7 @@
 export const ADD_TODO = 'ADD_TODO';
 export const COMPLETE_TODO = 'COMPLETE_TODO';
 export const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER';
+export const RESTORE_TODO = 'RESTORE_TODO';
 
 export const VisibilityFilters = {
     SHOW_ALL: 'SHOW_ALL',
@@ -23,6 +24,13 @@ export function addTodo(text) {
 export function completeTodo(index) {
     return {
         type: COMPLETE_TODO,
+        index
+    }
+};
+
+export function restoreTodo(index) {
+    return {
+        type: RESTORE_TODO,
         index
     }
 };
