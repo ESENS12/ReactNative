@@ -20,6 +20,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
     BackHandler,
+  Keyboard,
 } from 'react-native';
 
 import {
@@ -262,7 +263,10 @@ export class MainPage extends React.Component {
       // return {items : getItemRes, page};
     }, callback =>{
       // console.log("item size : " + this.state.items.length);
+      console.log("dismiss keyboard ");
       this.openProgressbar(false);
+      this.refs.searchBar.unFocus();
+      Keyboard.dismiss;
     });
 
   }
@@ -291,6 +295,16 @@ export class MainPage extends React.Component {
 
   componentDidMount(){
 
+
+    this.keyboardDidShowListener = Keyboard.addListener(
+        'keyboardDidShow',
+        this._keyboardDidShow,
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+        'keyboardDidHide',
+        this._keyboardDidHide,
+    );
+
     BackHandler.addEventListener('hardwareBackPress',this.handleBackButton);
 
     const screenWidth = Math.round(Dimensions.get('window').width);
@@ -298,7 +312,9 @@ export class MainPage extends React.Component {
 
     this.setState({screenWidth : screenWidth, screenHeight : screenHeight});
     this.getNextPage();
-    // this.refs.searchBar.focus();
+
+    // console.log(this.refs.searchBar.focus());
+
     this._panResponder = PanResponder.create({
 
       onMoveShouldSetResponderCapture: () => true,
@@ -313,6 +329,15 @@ export class MainPage extends React.Component {
       onPanResponderMove: () => { },
       onPanResponderTerminationRequest: () => true,
     })
+  }
+
+
+  _keyboardDidShow() {
+    console.log('Keyboard Shown');
+  }
+
+  _keyboardDidHide() {
+    console.log('Keyboard Hidden');
   }
 
   onclick(item){
@@ -337,7 +362,11 @@ export class MainPage extends React.Component {
                   placeholder="Search"
                   hideBackground={true}
                   onChangeText={(searchQuery) => this.setState({searchQuery : searchQuery})}
-                  onSearchButtonPress={()=> this._searchIt()}
+                  onSearchButtonPress={()=> {
+                      this._searchIt();
+
+                  }
+                  }
                   onCancelButtonPress={() => this.setState({searchQuery : ""})}
               />
 
