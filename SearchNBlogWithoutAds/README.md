@@ -26,3 +26,12 @@
 - yarn add react-native-vector-icons
 - yarn add styled-components
 - yarn add react-native-dots-pagination
+
+
+# ScreenShots
+
+![image](https://user-images.githubusercontent.com/20294219/75106295-3f788900-565e-11ea-9d53-d1487aa9ed9d.png)
+
+![image](https://user-images.githubusercontent.com/20294219/75106300-6040de80-565e-11ea-9c96-19f6ed7c77a3.png)
+
+
