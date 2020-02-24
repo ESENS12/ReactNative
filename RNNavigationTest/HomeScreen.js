@@ -1,12 +1,23 @@
 import {Button,View,SafeAreaView} from "react-native";
 import React  from 'react';
 import { NavigationEvents } from 'react-navigation';
-;
+
 
 export class HomeScreen extends React.Component {
     static navigationOptions = {
         title: 'Home',
+        headerBackTitle: 'Back',
+        gesturesEnabled : false, //for iOS swipe
+        headerLeft: () => (
+            <Button
+                onPress={() => navigation.navigate('MyModal')}
+                title="Info"
+                color="#fff"
+            />
+        ),
     };
+
+    /* render function, etc */
 
     componentDidMount(){
         // this.load();

@@ -4,6 +4,7 @@ import React  from 'react';
 export class ProfileScreen extends React.Component {
     static navigationOptions = {
         title: 'Profile',
+        gesturesEnabled : false,
     };
 
     render() {

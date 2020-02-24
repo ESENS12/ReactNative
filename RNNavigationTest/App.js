@@ -1,46 +1,50 @@
 import {createAppContainer, NavigationEvents} from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createDrawerNavigator } from 'react-navigation-drawer';
 import { HomeScreen } from './HomeScreen';
 import { ProfileScreen } from './ProfileScreen';
-
+import {Button,View,Text} from "react-native";
 import React  from 'react';
 
 const MainNavigator = createStackNavigator({
   Home: {
     screen: HomeScreen,
-    navigationOptions:{
-      title:'Home',
-      headerBackTitle: 'Back',
-      gesturesEnabled : false,
-    }
   },
   Profile: {
     screen: ProfileScreen,
-    navigationOptions:{
-      gesturesEnabled : false,
-    }
   },
 });
 
 
-const DrawerNavigator = createDrawerNavigator({
-  Home: { //Title
-    screen: HomeScreen,
-    navigationOptions: {
-      drawerLabel: "HomeScreen"
+const RootStack = createStackNavigator(
+    {
+      Main: {
+        screen: MainNavigator,
+      },
+      MyModal: {
+        screen: ModalScreen,
+      },
+    },
+    {
+      mode: 'modal',
+      headerMode: 'none',
     }
-  },
-  Profile: {//Title
-    screen: ProfileScreen,
-    navigationOptions: {
-      drawerLabel: "Profile"
-    }
-  },
+);
 
-});
+class ModalScreen extends React.Component {
+  render() {
+    return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontSize: 30 }}>This is a modal!</Text>
+          <Button
+              onPress={() => this.props.navigation.goBack()}
+              title="Dismiss"
+          />
+        </View>
+    );
+  }
+}
 
-const App = createAppContainer(MainNavigator);
+const App = createAppContainer(RootStack);
 // const App = createAppContainer(DrawerNavigator);
 
 export default App;

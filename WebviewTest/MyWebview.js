@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {WebView} from 'react-native-webview';
 
 const myHtml = require('./web/index.html');
-// const myJsLib = require('./web/clock.js');
+// let myJsLib = require('./web/clock.js');
 
 export class MyWebview extends Component {
 
@@ -23,15 +23,19 @@ export class MyWebview extends Component {
         // const fileContents = await FileSystem.readAsStringAsync(file.localUri);
         // this._editorHtml = fileContents;
         // console.log("props uri : " + this.props.uri);
-        const fs = require('react-native-fs');
-        const filePath = fs.DocumentDirectoryPath + '/clock.js';
-        console.log(fs.DocumentDirectoryPath);
-        const js = await fs.readFile(filePath, 'utf8').then(()=>{
-            console.log('read file success');
+        // const fs = require('react-native-fs');
+        // const filePath = fs.DocumentDirectoryPath + '/clock.js';
+        // console.log(fs.DocumentDirectoryPath);
+        // const js = await fs.readFile(filePath, 'utf8').then(()=>{
+        //     console.log('read file success');
+        //
+        // });
+        // const json = 'module.exports = ' + JSON.stringify(js) + ';';
+        // await fs.writeFile(fs.DocumentDirectoryPath + '/my-convert-clock.js', json);
+        // myJsLib = filePath;
 
-        });
-        const json = 'module.exports = ' + JSON.stringify(js) + ';';
-        await fs.writeFile(fs.DocumentDirectoryPath + '/my-convert-clock.js', json);
+        // this.injectJSFileFromWeb();
+
     }
 
 
@@ -41,9 +45,11 @@ export class MyWebview extends Component {
                 ref={ref=>(this.webview = ref)}
                 originWhitelist={["*"]}
                 allowFileAccess={true}
-                source={
-                    myHtml
-                }
+                source={{uri: 'https://github.com/facebook/react-native'}}
+                // source={{ html: myHtml, baseUrl: '' }}
+                // source={
+                //     myHtml
+                // }
                 domStorageEnabled={true}
                 allowUniversalAccessFromFileURLs={true}
                 allowFileAccessFromFileURLs={true}
@@ -52,7 +58,7 @@ export class MyWebview extends Component {
                 style={{marginTop: 20}}
                 onNavigationStateChange={this.handleWebViewNavigationStateChange}
                 // injectedJavaScript={myJsLib}
-                // onLoad={()=>{console.log("onload!");this.injectJSFileFromWeb();}}
+                // onLoad={()=>{console.log("onload! : " ,myJsLib);}}
             />
         );
     }
