@@ -224,7 +224,7 @@ export class MainPage extends React.Component {
       screenHeight : 0,
       isScrollEnd: false,
       searchOption : 'sim',
-      searchQuery : "남도숯불고기창고",
+      searchQuery : "",
       itemIndex : 1,
     };
     Icon.loadFont();
@@ -311,7 +311,7 @@ export class MainPage extends React.Component {
     const screenHeight = Math.round(Dimensions.get('window').height);
 
     this.setState({screenWidth : screenWidth, screenHeight : screenHeight});
-    this.getNextPage();
+    // this.getNextPage();
 
     // console.log(this.refs.searchBar.focus());
 
@@ -362,11 +362,7 @@ export class MainPage extends React.Component {
                   placeholder="Search"
                   hideBackground={true}
                   onChangeText={(searchQuery) => this.setState({searchQuery : searchQuery})}
-                  onSearchButtonPress={()=> {
-                      this._searchIt();
-
-                  }
-                  }
+                  onSearchButtonPress={()=> this._searchIt()}
                   onCancelButtonPress={() => this.setState({searchQuery : ""})}
               />
 
