@@ -173,31 +173,31 @@ async function getBlogResVol2(searchQuery, page, searchOption){
 
 export class MainPage extends React.Component {
 
-  static navigationOptions = {
-    title : "Home",
-    headerBackTitle: 'Back',
-    gesturesEnabled : false, //for iOS swipe
-    headerStyle: {
-      backgroundColor: '#03d05e',
-    },
-    headerTitleStyle: {
-      fontWeight: 'bold',
-      color:'white',
-      fontSize: 20
-    },
 
-    // headerRight: () => (
-    //     <Button
-    //         onPress={this._searchOption}
-    //         title="Option"
-    //         color="#fff"
-    //     />
-    // ),
+  static navigationOptions =({navigation}) =>{
+    return {
+        title : "Search Without Ads",
+        headerBackTitle: 'Back',
+        gesturesEnabled : false, //for iOS swipe
+        headerStyle: {
+          backgroundColor: '#03d05e',
+        },
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          color:'white',
+          fontSize: 20
+        },
 
+        // headerRight: () => (
+        //     <Button
+        //         onPress={this._searchOption}
+        //         title="Option"
+        //         color="#fff"
+        //     />
+        // ),
+
+    };
   };
-
-
-
   //
   _searchOption = () => {
     let searchOption = '';
