@@ -22,6 +22,6 @@ module.exports = {
     assetExts: ['bin', 'txt', 'jpg'],
     sourceExts: ['js', 'json', 'ts', 'tsx', 'jsx'],
     // Change 3 (add platform_node to blacklist)
-    blacklistRE: blacklist([/platform_node/])
+    blacklistRE: blacklist([/platform_node/,/@tensorflow.*_test.js/])
   },
 };

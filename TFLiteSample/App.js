@@ -19,16 +19,16 @@ import {
 
 // import {ImageClassifier} from './ImageClassifier';
 import {TfjsSample} from './TfjsSample';
-import {SampleApp} from './sampleApp';
-
+// import {SampleApp} from './sampleApp';
+//
 const App: () => React$Node = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         {/*<ImageClassifier/>*/}
-        <SampleApp/>
-        {/*<TfjsSample/>*/}
+        {/*<SampleApp/>*/}
+        <TfjsSample/>
       </SafeAreaView>
     </>
   );

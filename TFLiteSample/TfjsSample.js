@@ -1,6 +1,8 @@
 import * as tf from '@tensorflow/tfjs';
 import React, {Component} from 'react';
 import * as mobilenet from '@tensorflow-models/mobilenet'
+import * as tmImage from '@teachablemachine/image';
+
 
 import {
     View,
@@ -111,10 +113,14 @@ export class TfjsSample extends React.Component {
         const modelUrl = URL + "model.json";
         const metadataUrl = URL + "metadata.json";
 
+        this.model = await tmImage.load(modelUrl, metadataUrl);
 
-        const modelJson = require('./assets/model.json');
-        const modelWeights = require('./assets/weights.bin');
-        const modelMetaData = require('./assets/metadata.json');
+        console.log("this.model : " , this.model);
+        var maxPredictions = model.getTotalClasses();
+        console.log("maxPredictions : " , maxPredictions);
+        // const modelJson = require('./assets/model.json');
+        // const modelWeights = require('./assets/weights.bin');
+        // const modelMetaData = require('./assets/metadata.json');
 
         // this.model = await tf.loadLayersModel(bundleResourceIO(modelJson, modelWeights));
         // this.model = await tf.models.modelFromJSON(modelJson);
@@ -124,9 +130,9 @@ export class TfjsSample extends React.Component {
         this.model.summary();
 
 
-        console.log("modelWeights: " + modelWeights);
-        console.log("modelJson: "+modelJson.modelTopology.config.name);
-
+        // console.log("modelWeights: " + modelWeights);
+        // console.log("modelJson: "+modelJson.modelTopology.config.name);
+        //
         // this.model = await tf.loadLayersModel(bundleResourceIO(modelUrl, metadataUrl));
         // this.model = await tf.loadLayersModel(modelUrl);
 
