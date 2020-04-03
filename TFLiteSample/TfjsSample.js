@@ -2,6 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import React, {Component} from 'react';
 import * as mobilenet from '@tensorflow-models/mobilenet'
 import * as tmImage from '@teachablemachine/image';
+import Canvas from 'react-native-canvas';
 
 
 import {
@@ -18,8 +19,14 @@ export class TfjsSample extends React.Component {
         super(props);
         this.state = {
             isTfReady: false,
+            ctx : {},
         };
     }
+
+    handleCanvas = (canvas) => {
+        this.ctx = canvas.getContext('2d');
+        this.ctx.drawImage(require('./assets/img/blog_8.jpg'), 10, 10);
+    };
 
     async bundleResourceIOExample() {
         // console.log('bundleResourceIOExample!');
@@ -113,11 +120,24 @@ export class TfjsSample extends React.Component {
         const modelUrl = URL + "model.json";
         const metadataUrl = URL + "metadata.json";
 
+
+        //todo image canvas 생성 -> input modle -> predict 동작 하는지 확인(RN 에서 document.canvas 동작하는지?)
+
+
         this.model = await tmImage.load(modelUrl, metadataUrl);
 
+        console.log('this.ctx : ' , this.ctx);
+        // const image = new Image(canvas, height, width);
         console.log("this.model : " , this.model);
-        var maxPredictions = model.getTotalClasses();
+        let maxPredictions = this.model.getTotalClasses();
         console.log("maxPredictions : " , maxPredictions);
+        const image = require('./assets/img/blog_8.jpg');
+        const flip = true;
+        const allPredictions = await this.model.predict(image, flip);
+        console.log("allPredictions : " , allPredictions);
+
+
+
         // const modelJson = require('./assets/model.json');
         // const modelWeights = require('./assets/weights.bin');
         // const modelMetaData = require('./assets/metadata.json');
@@ -127,7 +147,7 @@ export class TfjsSample extends React.Component {
         // this.model = await tf.loadGraphModel(modelUrl,{fromTFHub: false});
 
         // this.model = await tf.loadGraphModel(bundleResourceIO(modelJson, modelWeights));
-        this.model.summary();
+        // this.model.summary();
 
 
         // console.log("modelWeights: " + modelWeights);
@@ -157,6 +177,13 @@ export class TfjsSample extends React.Component {
                 {this.state.isTfReady &&
                 <Text> TF is Ready!
                 </Text>}
+
+                <Image
+                    style={{width: 50, height: 50}}
+                    source={require('./assets/img/blog_8.jpg')}
+                />
+
+                <Canvas ref={this.handleCanvas}/>
 
 
             </SafeAreaView>
