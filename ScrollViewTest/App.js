@@ -8,6 +8,7 @@ import {Avatar, ListItem} from 'react-native-elements'
 import SectionListBasic from './component/SectionListBasic'
 import { randomUsers } from './util';
 import MyAvatar from "./component/MyAvatar";
+import {MyScrollView} from "./component/MyScrollView";
 
 export default class App extends Component {
 
@@ -38,7 +39,7 @@ export default class App extends Component {
 
     render() {
         return (
-            {/*<SectionListBasic/>*/},
+
                 <View style={styles.container}>
 
                     {/** 기본 아바타 사용 **/}
@@ -96,38 +97,47 @@ export default class App extends Component {
 
 
                     {/** 커스텀 아바타 사용 방식 **/}
-                    <FlatList
-                        data={this.state.data}
-                        initialNumToRender={20}
-                        onEndReachedThreshold={1}
-                        onEndReached={this.onEndReached}
-                        refreshing={this.state.refreshing}
-                        // horizontal={true}
-                        onRefresh={this.onRefresh}
-                        renderItem={({ item }) => {
-                            return (
-                                <ListItem
-                                    //roundAvatar
-                                    // 디폴트 props를 지정해뒀기 떄문에 만약 props에 값을 주는걸 까먹거나 null이나 none이 넘어가도 괜찮다.
-                                    leftAvatar={<MyAvatar/>}
+                    {/*<FlatList*/}
+                        {/*data={this.state.data}*/}
+                        {/*initialNumToRender={20}*/}
+                        {/*onEndReachedThreshold={1}*/}
+                        {/*onEndReached={this.onEndReached}*/}
+                        {/*refreshing={this.state.refreshing}*/}
+                        {/*// horizontal={true}*/}
+                        {/*onRefresh={this.onRefresh}*/}
+                        {/*renderItem={({ item }) => {*/}
+                            {/*return (*/}
+                                {/*<ListItem*/}
+                                    {/*//roundAvatar*/}
+                                    {/*// 디폴트 props를 지정해뒀기 떄문에 만약 props에 값을 주는걸 까먹거나 null이나 none이 넘어가도 괜찮다.*/}
+                                    {/*leftAvatar={<MyAvatar/>}*/}
 
-                                    //props에 따라 아바타 변경 적용
-                                    rightAvatar={<MyAvatar isRounded={false} uri={item.avatar} name={item.name}/>}
-                                    title={item.name}
-                                    containerStyle={styles.itemStyle}
-                                />
-                            );
-                        }}
-                    />
+                                    {/*//props에 따라 아바타 변경 적용*/}
+                                    {/*rightAvatar={<MyAvatar isRounded={false} uri={item.avatar} name={item.name}/>}*/}
+                                    {/*title={item.name}*/}
+                                    {/*containerStyle={styles.itemStyle}*/}
+                                {/*/>*/}
+                            {/*);*/}
+                        {/*}}*/}
+                    {/*/>*/}
+
+                    {this.state.data.map( (item) => <MyScrollView style={styles.myScrollView} {...item} /> ) }
+
                 </View>
-
-
 
         );
     }
 }
 
 const styles = StyleSheet.create({
+
+    myScrollView:{
+        flex :1,
+        alignItems: 'center',
+        justifyContent : 'center',
+        alignSelf: 'stretch',
+    },
+
     container: {
         flex: 1,
         paddingTop: 22

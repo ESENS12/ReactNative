@@ -274,6 +274,7 @@ export class MainPage extends React.Component {
 
     handleBackButton = () => {
       console.log('handleBackButton!');
+      // console.log(this.props.navigation.goBack());
         // 2000(2초) 안에 back 버튼을 한번 더 클릭 할 경우 앱 종료
         if (this.exitApp == undefined || !this.exitApp) {
             ToastAndroid.show('한번 더 누르시면 종료됩니다.', ToastAndroid.SHORT);

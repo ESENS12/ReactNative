@@ -6,6 +6,7 @@ export default class SectionListBasic extends Component {
         return (
             <View style={styles.container}>
                 <SectionList
+                    // horizontal={true}
                     sections={[
                         {title: 'D', data: ['Devin','Darwin','Darwin','David']},
                         {title: 'E', data: ['Echo','Elvin','Ecripstovion','EPIC']},

@@ -2,6 +2,7 @@ import {View, ScrollView, Animated} from 'react-native';
 import React ,{PureComponent} from 'react';
 
 export class MyScrollView extends PureComponent {
+
     state = {
         indicator: new Animated.Value(0),
         wholeHeight: 1,
