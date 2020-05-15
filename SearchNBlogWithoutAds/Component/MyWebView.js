@@ -1,6 +1,16 @@
 import React, {Component} from 'react';
 import {WebView} from 'react-native-webview';
-import {ActivityIndicator, Button, Modal, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+    ActivityIndicator,
+    Button,
+    Modal,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    View,
+    BackHandler,
+    ToastAndroid,
+} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 export class MyWebview extends Component {
@@ -16,6 +26,9 @@ export class MyWebview extends Component {
     }
 
     init(){
+        // BackHandler.addEventListener('hardwareBackPress',this.handleBackButton);
+        // console.log(this.props.navigation);
+
     //     this.setState(
     //         { uri : this.props.navigation.getParam('uri','null')}
     //     ,() => {
@@ -25,6 +38,20 @@ export class MyWebview extends Component {
 
         console.log("webView OnCreate!");
     }
+
+    handleBackButton = () => {
+        // console.log('handleBackButton[webview]!');
+        // console.log('this.props.navigation.isFocused()[webview]!' , this.props.navigation.isFocused());
+
+        //현재 페이지가 focused 되어있을때만 동작하도록
+        // if(!this.props.navigation.isFocused()){
+        //     return;
+        // }
+        //
+        // 페이지에서는 백버튼 누르면 메인페이지로 돌아가야함.
+        // this.props.navigation.goBack();
+    };
+
 
     render() {
         // const { navigate } = this.props.navigation;

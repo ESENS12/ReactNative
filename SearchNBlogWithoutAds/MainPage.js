@@ -187,7 +187,7 @@ export class MainPage extends React.Component {
           color:'white',
           fontSize: 20
         },
-
+        // todo iphone guesture가 조악해서, UI버튼 필요하긴 함.
         // headerRight: () => (
         //     <Button
         //         onPress={this._searchOption}
@@ -273,8 +273,13 @@ export class MainPage extends React.Component {
 
 
     handleBackButton = () => {
-      console.log('handleBackButton!');
-      // console.log(this.props.navigation.goBack());
+    console.log("this.props.navigation : " ,this.props.navigation);
+
+      // 현재 page가 focused 일때만 (메인페이지에서만) 동작하게
+      if(!this.props.navigation.isFocused()){
+        return;
+      }
+
         // 2000(2초) 안에 back 버튼을 한번 더 클릭 할 경우 앱 종료
         if (this.exitApp == undefined || !this.exitApp) {
             ToastAndroid.show('한번 더 누르시면 종료됩니다.', ToastAndroid.SHORT);
@@ -292,10 +297,9 @@ export class MainPage extends React.Component {
             BackHandler.exitApp();  // 앱 종료
         }
         return true;
-    }
+    };
 
   componentDidMount(){
-
 
     this.keyboardDidShowListener = Keyboard.addListener(
         'keyboardDidShow',
@@ -381,7 +385,8 @@ export class MainPage extends React.Component {
                         scrollEventThrottle={0}
             >
               { this.state.items.map((item,index) => <MyItem key = {index} fScroll = {this.fScroll} _panResponder = {this._panResponder}
-                                                           onPress={ () => this.onclick(item)} state={this.state}   {...item} />) }
+                                                            onPress={ () => this.onclick(item)}
+                                                             state={this.state}   {...item} />) }
             </ScrollView>
 
           {this.state.items.length > 0 && this.state.isScrollEnd &&
