@@ -13,6 +13,8 @@
 - Vector icons (https://ionicons.com/)
 - Styled Component (https://www.styled-components.com/)
 - ScrollView Dot Indicator (https://github.com/ESENS12/ReactNative/tree/master/ScrollViewWithDotIndicator)
+- ./gradlew assembleRelease
+
 
 # Components
 - npm i cheerio-without-node-native@0.20.2
