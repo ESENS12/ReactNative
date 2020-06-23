@@ -26,7 +26,7 @@ export class MyWebview extends Component {
     }
 
     init(){
-        // BackHandler.addEventListener('hardwareBackPress',this.handleBackButton);
+        BackHandler.addEventListener('hardwareBackPress',this.handleBackButton);
         // console.log(this.props.navigation);
 
     //     this.setState(
@@ -40,7 +40,8 @@ export class MyWebview extends Component {
     }
 
     handleBackButton = () => {
-        // console.log('handleBackButton[webview]!');
+
+        console.log('handleBackButton[webview]!');
         // console.log('this.props.navigation.isFocused()[webview]!' , this.props.navigation.isFocused());
 
         //현재 페이지가 focused 되어있을때만 동작하도록
@@ -81,6 +82,7 @@ export class MyWebview extends Component {
         // target = 3
         // title = "NAVER"
         // url = "https://m.naver.com/"
+        //todo cangoback이 true일때 뒤로가기 동작하도록 해야함.
         console.log("loading : " + newNavState.loading);
     };
 

@@ -23,6 +23,8 @@ import {
   Keyboard,
 } from 'react-native';
 
+import { withNavigationFocus } from 'react-navigation';
+
 import {
   Header,
   LearnMoreLinks,
@@ -91,7 +93,6 @@ async function getBlogResVol2(searchQuery, page, searchOption){
         // https://m.blog.naver.com/conanronse?Redirect=Log&logNo=221607525803
         blogUrl = "https://m.blog.naver.com/" + nickName + "?Redirect=Log&logNo=" + postNumber;
       } else {
-        //todo 블로그 주소 잘못 치환 되는경우 있음
         blogUrl = ulList[i].url.replace("https://", "https://m.");
       }
 
@@ -100,7 +101,6 @@ async function getBlogResVol2(searchQuery, page, searchOption){
       console.log("=========================================");
       console.log("blogUrl : " + blogUrl);
 
-      //todo 다음외에도 다른 블로그들이 있음... 기존의 tag, class로 찾아가는 스크래핑 방법을 변경할 필요가 있음 (기능 확장)
       if(!blogUrl.includes("blog.naver")){
         console.log("find DaumBlog! skip this blog");
         ulList[i].isFake = true;
@@ -120,9 +120,6 @@ async function getBlogResVol2(searchQuery, page, searchOption){
 
       let fakeNum = 0;
 
-        //response 200 check
-        // const response = await fetch(blogUrl);
-
       $linkData.each(function (i, elem) {
 
         let atagData;
@@ -131,8 +128,6 @@ async function getBlogResVol2(searchQuery, page, searchOption){
         }else{
           atagData = elem.attribs.src;
         }
-        // console.log('atag  : ' + atagData);
-        // console.log('decode : ' + decodeURI(atagData));
 
         //지도나, 스티커, 프로필은 PASS
         if(elem.attribs.class === "se-sticker-image" || elem.attribs.class === 'se-map-image'
@@ -200,6 +195,7 @@ export class MainPage extends React.Component {
   };
   //
   _searchOption = () => {
+
     let searchOption = '';
 
     if(this.state.searchOption === 'date'){
@@ -273,13 +269,10 @@ export class MainPage extends React.Component {
 
 
     handleBackButton = () => {
-    console.log("this.props.navigation : " ,this.props.navigation);
-
-      // 현재 page가 focused 일때만 (메인페이지에서만) 동작하게
-      if(!this.props.navigation.isFocused()){
-        return;
-      }
-
+      // navigator.getCurrentRoutes().length >
+      // this.props.navigation.state.route
+      console.log("route.routes.length  : " , this.props.navigation.state);
+      console.log('handleBackButton[mainPage]!');
         // 2000(2초) 안에 back 버튼을 한번 더 클릭 할 경우 앱 종료
         if (this.exitApp == undefined || !this.exitApp) {
             ToastAndroid.show('한번 더 누르시면 종료됩니다.', ToastAndroid.SHORT);
@@ -311,6 +304,12 @@ export class MainPage extends React.Component {
     );
 
     BackHandler.addEventListener('hardwareBackPress',this.handleBackButton);
+
+    //webview에서 돌아왔을때 호출됨
+    this.props.navigation.addListener('willFocus', () => {
+        // console.log('willFocus!');
+        BackHandler.addEventListener('hardwareBackPress',this.handleBackButton);
+    });
 
     const screenWidth = Math.round(Dimensions.get('window').width);
     const screenHeight = Math.round(Dimensions.get('window').height);
@@ -349,6 +348,9 @@ export class MainPage extends React.Component {
     const { navigate } = this.props.navigation;
     const webview = 'MyWebview';
     console.log('onclick! ' + item.url);
+    // BackHandler.
+
+    BackHandler.removeEventListener('hardwareBackPress',this.handleBackButton);
     navigate(webview,{uri : item.url});
   }
 
